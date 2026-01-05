@@ -9,7 +9,7 @@
 This repository contains materials, data, scripts, and analysis pipelines associated with the manuscript  
 “**Guess What! Assessing the Psychological Meaning of the Stability Parameter in the Lévy-Flight Model**.”
 
-This project examines whether the stability parameter (**α**) in the Lévy-flight model (Voss et al., 2019) reflects **guessing**. Across two experiments (N<sub>total</sub> = 388), we provide converging experimental and correlational evidence for this interpretation, positioning α as both a theoretically meaningful construct and a methodological tool for improving data quality in cognitive research.
+This project examines whether the stability parameter (α) in the Lévy-flight model (Voss et al., 2019) reflects **guessing**. Across two experiments (*N*<sub>total</sub> = 388), we provide converging experimental and correlational evidence for this interpretation, positioning α as both a theoretically meaningful construct and a methodological tool for improving data quality in cognitive research.
 
 ---
 
