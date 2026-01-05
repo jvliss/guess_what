@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE surveyProject SYSTEM "doctype.survey.dtd">
+<surveyProject version="2.4" timestamp="2025-04-29 02:38:54" program="oFb" progversion="3.7.02 1378">
+<title>Pre_Survey_numeric</title>
+<description />
+<attributes.specific program="ofb">
+<attr id="language">eng</attr>
+</attributes.specific>
+<section>
+<title>Participant Information</title>
+<attributes.specific program="ofb">
+<attr id="id">TI</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+<question>
+<description>Informed Consent</description>
+<class>TextContent</class>
+<title />
+<explanation />
+<headerText>Teilnahme-Informationen</headerText>
+<inputPosition>right</inputPosition>
+<lead>
+<![CDATA[<p style="padding:0px 0px 20px;" align="center"><font size="5"><b>INFORMED CONSENT TO PARTICIPATE IN RESEARCH </b></font></p>
+
+<p style="padding:0px 0px 0px;" align="center"><b>WHAT IS THE PURPOSE OF THE STUDY?</b><br>The aim of this study is to learn more about decision processes as well as object perception.</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>WHAT WILL YOU BE ASKED TO DO?</b><br>The first part of the study is centred around a numerical task where numbers will be presented to you.<br></p>
+
+<div style="border:solid 2px #116bde;padding:5px 5px;background-color:rgba(17,107,222,0.3);" align="center">This task is to be completed exclusively on a <b> laptop in fullscreen mode</b>. This means the use of smartphones, tablets, computer screens, or larger screens connected to the laptop is not allowed.<br>Please also use the <b>latest version of Mozilla Firefox, Microsoft Edge, or Google Chrome</b> to ensure that all task components are displayed correctly. If your browser version is outdated, you will be notified during the task.<br>If you choose to participate, you will be redirected to a new page. <b>Please wait until the experiment has loaded.</b> Loading is finished as soon as the loading bar presented at that time is completely filled in gray. This may take a moment.</div>
+
+<p align="center">Upon task completion, you will be asked to answer a few questions regarding the task as well as your demographics. <br> In the second part of the study, you will be asked to rate a series of objects (e.g., in terms of novelty). <br> <br> Participation will take <b>approximately 80 minutes</b> in total.</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>WHAT ARE POSSIBLE RISKS AND DISCOMFORTS?</b><br>Your participation in this study does not involve any physical risk or emotional risk to you beyond the risks of daily life. However, due to the nature of the task, boredom or fatigue may occur. You have the right to discontinue participation at any time for any reason.</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>WHAT ARE THE POTENTIAL BENEFITS?</b><br>You will not receive direct benefit from the study, but your participation will contribute to scientific knowledge.</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>ARE THERE ANY COSTS FOR YOU IF YOU TAKE PART IN THE STUDY?</b><br>There are no costs associated with participating in the study.</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>WILL YOU RECEIVE ANY COMPENSATION FOR YOUR PARTICIPATION?</b><br>After full participation of the study you will receive <b>9.00 GBP.</b><br> <b>Please note:</b> It is crucial that you remain focused throughout the entire study. Exclusion from the study, without payment of 9.00 GBP, will occur if there are indications of a lack of concentration (i.&nbsp;e., leaving fullscreen mode).</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>HOW WILL CONFIDENTIALITY BE MAINTAINED?</b><br>Personal information such as your name or IP address will neither be recorded nor made accessible to the researchers (for more information see <a target="_blank" rel="noopener noreferrer" href="https://participant-help.prolific.com/en/article/498241">here</a>). <br>Identifying features such as your Prolific ID will not be stored together with your responses, ensuring anonymous data storage. As the data cannot be related to your Prolific ID, it will not be possible to delete them after your participation in the study. However, during the study, you are free to terminate the study, which will result in deletion of your data. Furthermore, at the end of the study, you will be asked if you agree to the storage of your data, providing another opportunity to refuse data storage. Compensation for participation does not rely on your consent to data storage. <br>Anonymous data, with consent for data storage, will be stored for at least 10 years and solely collected and processed for research and educational purposes. This includes use in scientific publications and presentations, as well as the unrestricted provision of the data for other researchers, e.&nbsp;g., in internet-based data archives in accordance with the recommendations of the German Research Foundation (DFG) and the German Psychological Society (DGPs) for quality assurance in research.</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>DO I HAVE TO TAKE PART IN THIS STUDY?</b><br>Your participation is completely voluntary. You can terminate participation at any time by closing the browser window. Data collected up to the point of termination will be deleted. There are no disadvantages to an early termination (e.&nbsp;g., such termination has no negative impact on your approval rate on Prolific).</p>
+
+<p style="padding:15px 0px 0px;" align="center"><b>WHOM SHOULD YOU CONTACT IF YOU HAVE QUESTIONS OR CONCERNS?</b><br>If you have any questions about this study, please contact Julia Liss  (<a href="mailto:%20j.liss@email.uni-kiel.de">j.liss@email.uni-kiel.de</a>).<br></p>
+
+<p class="sceditor-nlf"><br></p>]]>
+</lead>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="number">no</attr>
+<attr id="alignment">default</attr>
+<attr id="character">html</attr>
+<attr id="spacing">0</attr>
+</attributes.specific>
+</question>
+<question>
+<description>Continue</description>
+<class>TextContent</class>
+<title />
+<explanation />
+<inputPosition>right</inputPosition>
+<lead>
+<![CDATA[<p align="center" style="background-color: #d3d3d3; color: black;">Please click "Continue" in the bottom right to proceed.</p>]]>
+</lead>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">2</attr>
+<attr id="alignment">default</attr>
+<attr id="character">html</attr>
+</attributes.specific>
+</question>
+</section>
+<section>
+<title>Informed Consent</title>
+<attributes.specific program="ofb">
+<attr id="id">EI</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+<question>
+<description>Informed Consent</description>
+<class>select</class>
+<title>
+<![CDATA[<p align="center">INFORMED CONSENT</p>]]>
+</title>
+<explanation>
+<![CDATA[<p align="center">I hereby confirm that I am at least 18 years old, have read and understood this consent form, and agree to participate in the study under the terms stated above.</p>]]>
+</explanation>
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">ERKL</alias>
+</variables>
+<item>
+<text>Yes.</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>No, I do not wish to participate.</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>Continue</description>
+<class>TextContent</class>
+<title />
+<explanation />
+<inputPosition>right</inputPosition>
+<lead>
+<![CDATA[<p align="center" style="background-color: #d3d3d3; color: black;">Please click "Continue" in the bottom right to proceed.</p>]]>
+</lead>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+<attr id="alignment">default</attr>
+<attr id="character">html</attr>
+</attributes.specific>
+</question>
+</section>
+<section>
+<title>premature_end</title>
+<attributes.specific program="ofb">
+<attr id="id">EN</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+<question>
+<description>premature_end</description>
+<class>TextContent</class>
+<title />
+<explanation />
+<headerText>Thank you for your time.</headerText>
+<inputPosition>right</inputPosition>
+<lead>Unfortunately, participation is not possible without agreeing to the terms of participation.</lead>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="alignment">center</attr>
+<attr id="character">plain</attr>
+</attributes.specific>
+</question>
+</section>
+<surveyLayout version="2.4" program="oFb" progversion="3.7.02 1378">
+<name>neutral</name>
+<title>SoSci Survey Neutral</title>
+<template>
+<![CDATA[<!DOCTYPE html>
+<html>
+<head>
+%head%
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+body { padding-bottom: 20px }
+div.questionary { min-width: 320px; max-width: %width%; padding: 0 10px; margin: 0 auto; box-sizing: border-box; }
+div#s2t-logo { margin-top: 18px }
+img.s2-logo { max-width: 100%; vertical-align: top }
+div#s2t-progress { width: 200px; float: right; margin: 0 0 20px 32px }
+.buttonControl { padding-top: 0; padding-bottom: 16px }
+div.progressbar { height: 20px; border-color: #AAAAAA }
+div.progressbar div.progresstext { top: 4px }
+hr { height: 2px; border: 0px; background-color: transparent; border-bottom: 2px solid %color.4%; margin: 24px 0px 28px 0px; }
+a { text-decoration: none; }
+
+/* Center footer on smartphone */
+@media (max-width: 450px) {
+  div#s2t-controls { text-align: center }
+  div#s2t-progress { left: 0; right: 0; margin: 0 auto 10px auto; float: none }
+  div#s2t-footer{ text-align: center }
+}
+
+/* No auto-zoom on iOS smartphones */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (max-device-width:1024px) { 
+  select,
+  textarea,
+  input[type="text"],
+  input[type="number"],
+  input[type="password"] { font-size: 16px }
+}
+</style>
+</head>
+<body>
+<div class="questionary">
+  <div id="s2t-logo">%logo%</div>
+  <hr style="margin-top: 12px;">
+  %form.open%
+  <div id="s2t-content">
+  %questionnaire%
+  </div>
+  <hr style="margin-bottom: 14px;">
+  <div id="s2t-footer">
+    <div id="s2t-progress">%progress%</div>
+    <div id="s2t-controls">
+      %button.control%
+    </div>
+    %imprint%
+  </div>
+  %form.close%
+</div>
+</body>
+</html>]]>
+</template>
+<defaultStatus>yes</defaultStatus>
+<copyright>
+<![CDATA[(c)2005-2015 SoSci Survey
+Standard-Layout für SoSci Survey
+Freigegeben zur Veränderung und Weitergabe]]>
+</copyright>
+<attributes.specific program="ofb">
+<attr id="item.residual.style">border-left: 2px solid %color.4%;</attr>
+<attr id="item.balloon.style">font-size: 10px; margin: 0px 0px 4px 0px;</attr>
+<attr id="item.dots.style">margin-left: 16px; text-indent: -16px;</attr>
+<attr id="input.balloon.style">font-size: 11px; border: 1px solid %color.4%;</attr>
+<attr id="input.scale.vertical-align">middle</attr>
+<attr id="color.3">EEEEEE</attr>
+<attr id="color.4">CCCCCC</attr>
+<attr id="color.5">FFF6C0</attr>
+<attr id="color.6">FF9900</attr>
+<attr id="color.7">DDCCFF</attr>
+<attr id="color.8">605287</attr>
+<attr id="color.link.default">color.8</attr>
+<attr id="color.link.hover">color.6</attr>
+<attr id="spacing.items">12px</attr>
+<attr id="title.style">font-weight: bold; margin-bottom: 0.5em;</attr>
+<attr id="opener.style">font-weight: bold; font-weight: normal; padding: 0px 0px 3px 3px; vertical-align: bottom;</attr>
+<attr id="selectable.backgroundInactive">color.3</attr>
+<attr id="selectable.borderInactive">color.4</attr>
+<attr id="selectable.backgroundSelected">color.5</attr>
+<attr id="selectable.borderSelected">color.6</attr>
+<attr id="selectable.borderAvailable">color.4</attr>
+</attributes.specific>
+</surveyLayout>
+<layoutTexts>
+<layoutText id="default.imprint"><txt lng="eng"><![CDATA[<a href="mailto:j.liss@email.uni-kiel.de">Julia V. Liss, M.Sc.</a>,  Kiel University – 2024]]></txt></layoutText>
+<layoutText id="default.next"><txt lng="eng">Continue</txt></layoutText>
+</layoutTexts>
+<questionnaire>
+<title>Fragebogen</title>
+<attributes.specific program="ofb">
+<attr id="id">base</attr>
+<attr id="content">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;questionnaire&gt;
+
+&lt;!-- Page 1 --&gt;
+&lt;page ident=&quot;TI&quot; intID=&quot;1&quot;&gt;
+&lt;question id=&quot;TI01&quot; intID=&quot;2&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Page 2 --&gt;
+&lt;page ident=&quot;ERK&quot; intID=&quot;5&quot;&gt;
+&lt;question id=&quot;EI01&quot; intID=&quot;3&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Page 3 --&gt;
+&lt;page ident=&quot;PHP&quot; intID=&quot;6&quot;&gt;
+&lt;php intID=&quot;8&quot;&gt;&lt;![CDATA[
+if (value(&#039;ERKL&#039;)== 1) {
+redirect(&#039;https://run.pavlovia.org/K.Mminele/numeric_task/?participant=%caseNumber%&amp;session=test&#039;, false);
+}
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;/questionnaire&gt;</attr>
+<attr id="goodbye">
+<![CDATA[<h1 align="center">Thank you for your time.</h1>
+
+<p align="center">Unfortunately, participation is not possible without agreeing to the terms of participation.</p>]]>
+</attr>
+<attr id="panelForm">no</attr>
+<attr id="selection">1</attr>
+</attributes.specific>
+</questionnaire>
+</surveyProject>

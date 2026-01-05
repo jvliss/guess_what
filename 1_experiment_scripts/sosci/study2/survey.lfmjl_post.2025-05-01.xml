@@ -1,0 +1,2316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE surveyProject SYSTEM "doctype.survey.dtd">
+<surveyProject version="2.4" timestamp="2025-05-01 09:39:43" program="oFb" progversion="3.7.02 1378">
+<title>lfm_post</title>
+<description />
+<attributes.specific program="ofb">
+<attr id="language">eng</attr>
+</attributes.specific>
+<section>
+<title>demo</title>
+<attributes.specific program="ofb">
+<attr id="id">DE</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+<question>
+<description>age</description>
+<class>text</class>
+<title>How old are you?</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text />
+<suffix>years</suffix>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="width">100</attr>
+<attr id="restrictions.charset">number</attr>
+<attr id="restrictions.min">18</attr>
+<attr id="restrictions.max">99</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">age</alias>
+</variables>
+</item>
+</question>
+<question>
+<description>student</description>
+<class>select</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about yourself</h1></div>
+<p>Are you a student?</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<filter>
+<condition type="any">
+<value id="vOpt">2</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DE03</value>
+</effect>
+</filter>
+<filter>
+<condition type="any">
+<value id="vOpt">1</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DE05</value>
+</effect>
+</filter>
+<filter>
+<condition type="any">
+<value id="vOpt">1</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DE06</value>
+</effect>
+</filter>
+<filter>
+<condition type="any">
+<value id="vOpt">1</value>
+</condition>
+<effect type="-qst">
+<value id="qIS">DE04</value>
+</effect>
+</filter>
+<variables>
+<alias ix="0">student</alias>
+</variables>
+<item>
+<text>No</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Yes</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>psycho</description>
+<class>select</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about yourself</h1></div>
+<p>Are you studying psychology?</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<filter>
+<condition type="any">
+<value id="vOpt">1</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DE04</value>
+</effect>
+</filter>
+<filter>
+<condition type="any">
+<value id="vOpt">1</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DE05</value>
+</effect>
+</filter>
+<variables>
+<alias ix="0">psycho</alias>
+</variables>
+<item>
+<text>No</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Yes</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>subject</description>
+<class>text</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about yourself</h1></div>
+<p>Which subject are you studying?</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text />
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">subject</alias>
+</variables>
+</item>
+</question>
+<question>
+<description>psychopast</description>
+<class>select</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about yourself</h1></div>
+<p>Have you studied psychology?</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">psychopast</alias>
+</variables>
+<item>
+<text>No</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Yes</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>profession</description>
+<class>text</class>
+<title>What do you do for a living?</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text />
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">profession</alias>
+</variables>
+</item>
+</question>
+<question>
+<description>mothertongue</description>
+<class>select</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about yourself</h1></div>
+<p>What is your mother tongue?</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">mothertongue</alias>
+</variables>
+<item>
+<text>English</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Other, namely:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+<attr id="width">200</attr>
+<attr id="restrictions.charset">letters</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">mothertongue_other</alias>
+</variables>
+</item>
+</question>
+<question>
+<description>gender</description>
+<class>select</class>
+<title>What gender do you identify as?</title>
+<explanation>You can learn more about each category by hovering your mouse over it.</explanation>
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">gender</alias>
+</variables>
+<item>
+<text>
+<![CDATA[<div title="Cis female or cis women are people who identify with the sex registered at birth (female).">Cis female</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[<div title="Cis males or cis men are people who identify with the sex registered at birth (male).">Cis male</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[<div title="trans* is a possible self-identification for people who do not, or only partially, identify with the sex registered at birth.">Trans* woman</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[<div title="trans* is a possible self-identification for people who do not, or only partially, identify with the sex registered at birth.">Trans* man</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[<div title="Nonbinary is a possible self-identification for people who do not or do not exclusively identify as male or female.">Nonbinary</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Another one, namely:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+<attr id="restrictions.charset">letters</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">gender_other</alias>
+</variables>
+</item>
+<item>
+<text>Prefer not to answer</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>school_cert</description>
+<class>select</class>
+<title>What high school diploma do you have?</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<labels>
+<li i="1"><![CDATA[<b>1<br>very<br>easy</b>]]></li>
+<li i="2"><![CDATA[<b>2<br><br><br></b>]]></li>
+<li i="3"><![CDATA[<b>3<br><br><br></b>]]></li>
+<li i="4"><![CDATA[<b>4<br><br><br></b>]]></li>
+<li i="5"><![CDATA[<b>5<br><br><br></b>]]></li>
+<li i="6"><![CDATA[<b>6<br><br><br></b>]]></li>
+<li i="7"><![CDATA[<b>7<br><br><br></b>]]></li>
+<li i="8"><![CDATA[<b>8<br><br><br></b>]]></li>
+<li i="9"><![CDATA[<b>9<br><br><br></b>]]></li>
+<li i="10"><![CDATA[<b>10<br>very difficult</b>]]></li>
+</labels>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">9</attr>
+<attr id="pos">9</attr>
+<attr id="scale.metrics.extrema">60</attr>
+<attr id="number">no</attr>
+<attr id="scale.niveau">10</attr>
+<attr id="restrictions.answered">yes</attr>
+<attr id="alignment">left</attr>
+</attributes.specific>
+<item>
+<text>Honors Diploma</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>General High School Diploma</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Occupational Diploma</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Graduate Equivalency Degree (GED-Certificate)</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Other, namely:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+<attr id="width">350</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>math_mark</description>
+<class>select</class>
+<title>
+<![CDATA[What was your grade in mathematics? 
+(If you do not remember the exact grade, please provide an estimate.)]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">10</attr>
+<attr id="pos">10</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>
+<![CDATA[A (&ge; 90 %)]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[B (&ge; 80 %)]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[C (&ge; 70 %)]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[D (&ge; 60 %)]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[F (&le; 60 %)]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>handedness</description>
+<class>select</class>
+<title>Please indicate your handedness.</title>
+<explanation>You can learn more about each category by moving your mouse over it.</explanation>
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">11</attr>
+<attr id="pos">11</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>
+<![CDATA[<div title="If you are a right-handed person, you use your right hand for writing and doing most things.">right-handed</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[<div title="If you are a left-handed person, you use your left hand for writing and doing most things.">left-handed</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[<div title="If you are a mixed-handed person, you change which hand you prefer to use for different types of tasks.">mixed-handed</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+<attr id="width">100</attr>
+</attributes.specific>
+</item>
+<item>
+<text>
+<![CDATA[<div title="If you are an ambidextrous person, you have equal ability in both hands.">ambidextrous</div>]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>overall_mark</description>
+<class>select</class>
+<title>Overall, what grades did you receive in your high school diploma?</title>
+<explanation>If your were scored on a different scoring system, please check the table to see how your score translates.</explanation>
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">12</attr>
+<attr id="pos">12</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>Mostly As</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>About half As and half Bs</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly Bs</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>About half Bs and half Cs</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly Cs</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>About half Cs and half Ds</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly Ds</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly below Ds</text>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">9</attr>
+<attr id="pos">9</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>math_score</description>
+<class>select</class>
+<title>
+<![CDATA[Overall, what <font color = "blue">math grades</font> did you receive during high school?]]>
+</title>
+<explanation>If your were scored on a different scoring system, please check the table to see how your score translates.</explanation>
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">13</attr>
+<attr id="pos">13</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>Mostly As</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>About half As and half Bs</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly Bs</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>About half Bs and half Cs</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly Cs</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>About half Cs and half Ds</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly Ds</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mostly below Ds</text>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Other, please sepcify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">9</attr>
+<attr id="pos">9</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>advanced_courses</description>
+<class>select</class>
+<title>Did you take an(y) advanced math course(s) during high school?</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">14</attr>
+<attr id="pos">14</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<filter>
+<condition type="any">
+<value id="vOpt">1</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DE23</value>
+</effect>
+</filter>
+<item>
+<text>Yes</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>No</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>I started, but did not complete the course(s)</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>mark_AP_calcAB</description>
+<class>select</class>
+<title>
+<![CDATA[What grade did you receive on your <font color = "blue">AP Calculus AB exam</font>?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">16</attr>
+<attr id="pos">15</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>5</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>4</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>3</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>2</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>1</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>mark_AP_calcBC</description>
+<class>select</class>
+<title>
+<![CDATA[What grade did you receive on your <font color = "blue">AP Calculus BC exam</font>?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">17</attr>
+<attr id="pos">16</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>5</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>4</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>3</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>2</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>1</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>mark_AP_statistics</description>
+<class>select</class>
+<title>
+<![CDATA[What grade did you receive on your <font color = "blue">AP Statistics exam</font>?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">18</attr>
+<attr id="pos">17</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>5</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>4</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>3</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>2</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>1</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>mark_IB_mstudSL</description>
+<class>select</class>
+<title>
+<![CDATA[What grade did you receive on your <font color = "blue">Mathematical Studies SL exam</font>?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">19</attr>
+<attr id="pos">18</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>7</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>6</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>5</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>4</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>3</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>2</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+</item>
+<item>
+<text>1</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>mark_IB_mathSL</description>
+<class>select</class>
+<title>
+<![CDATA[What grade did you receive on your <font color = "blue">Mathematics SL exam</font>?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">20</attr>
+<attr id="pos">19</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>7</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>6</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>5</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>4</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>3</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>2</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+</item>
+<item>
+<text>1</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>mark_IB_mathHL</description>
+<class>select</class>
+<title>
+<![CDATA[What grade did you receive on your <font color = "blue">Mathematics HL exam</font>?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">22</attr>
+<attr id="pos">20</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>7</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>6</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>5</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>4</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>3</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>2</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+</item>
+<item>
+<text>1</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>mark_IB_fmathHL</description>
+<class>select</class>
+<title>
+<![CDATA[What grade did you receive on your <font color = "blue">Further Mathematics HL exam</font>?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">21</attr>
+<attr id="pos">21</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>7</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>6</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>5</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>4</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>3</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>2</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+</item>
+<item>
+<text>1</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>advanced_select</description>
+<class>checkbox</class>
+<title>Please indicate which advanced course(s) you attended.</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">23</attr>
+<attr id="pos">22</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>AP Calculus AB</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>AP Calculus BC</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>AP Statistics</text>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mathematical Studies SL (IB course)</text>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mathematics SL (IB course)</text>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Mathematics HL (IB course)</text>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+</item>
+<item>
+<text>Further Mathematics HL (IB course)</text>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other, please specify:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">8</attr>
+<attr id="pos">8</attr>
+<attr id="width">500</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>stronger_hand</description>
+<class>select</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about yourself</h1></div>When using a computer keyboard, would you consider your left hand or your right hand to be your "stronger hand"?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">24</attr>
+<attr id="pos">23</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>left hand</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>right hand</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>highschool</description>
+<class>select</class>
+<title>Did you finish high school?</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">25</attr>
+<attr id="pos">24</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>yes</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>no</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+</section>
+<section>
+<title>data</title>
+<attributes.specific program="ofb">
+<attr id="id">DA</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+<question>
+<description>storage</description>
+<class>select</class>
+<title />
+<explanation>
+<![CDATA[The aim of the study is to determine whether and how people's decisions differ based on the task instructions they receive. Specifically, it examines the differences between being instructed to only select an answer when fully confident in one's choice versus being instructed to take an educated guess. The instructions for each participant were randomly assigned. In your case, you were assigned  %inst% 
+
+<b>The data will be collected and published in anonymized form. No conclusions about specific individuals can be drawn from this information. The data will be made publicly available and may be used by others for further research. The data will be stored for a minimum of 10 years in accordance with the guidelines of the German Research Foundation. Do you agree to this?</b>
+
+As a reminder: By giving your consent, you are helping to ensure the success of this and other studies. However, compensation is independent of whether you agree to data storage or not.]]>
+</explanation>
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<filter>
+<condition type="any">
+<value id="vOpt">1</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DA03</value>
+</effect>
+</filter>
+<filter>
+<condition type="any">
+<value id="vOpt">2</value>
+</condition>
+<effect type="+qst">
+<value id="qIS">DA02</value>
+</effect>
+</filter>
+<variables>
+<alias ix="0">datastorage</alias>
+</variables>
+<item>
+<text>Yes: I agree to my data being stored.</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>No: I would like my data to be deleted.</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>deletedata</description>
+<class>TextContent</class>
+<title />
+<explanation />
+<inputPosition>right</inputPosition>
+<lead>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Thank you for your time!</h1></div>
+
+<p align="center">You have now reached the end of the study.</p>
+
+<p align="center">As per your request, we will delete your data. <br /></p>
+
+<p align="center">You will receive 9.00 GBP for your complete participation.</p>
+
+<p align="center"><br /></p>
+
+<p align="center">Please click on "Continue" at the bottom right to be redirected to Prolific.<br /></p>]]>
+</lead>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+<attr id="alignment">default</attr>
+<attr id="character">html</attr>
+</attributes.specific>
+</question>
+<question>
+<description>savedata</description>
+<class>TextContent</class>
+<title />
+<explanation />
+<inputPosition>right</inputPosition>
+<lead>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Thank you for your time!</h1></div>
+
+<p align="center">You have now reached the end of the study.</p>
+
+<p align="center">Thank you for agreeing to data storage.<br /></p>
+
+<p align="center">You will receive 9.00 GBP for your complete participation.</p>
+
+<p align="center"><br /></p>
+
+<p align="center">Please click on "Continue" at the bottom right to be redirected to Prolific.<br /></p>]]>
+</lead>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+<attr id="alignment">default</attr>
+<attr id="character">html</attr>
+</attributes.specific>
+</question>
+</section>
+<section>
+<title>strategy</title>
+<attributes.specific program="ofb">
+<attr id="id">ST</attr>
+<attr id="pos">3</attr>
+</attributes.specific>
+<question>
+<description>strategy</description>
+<class>text</class>
+<title>
+<![CDATA[Did you have any strategy or different strategies for the task you have just completed (i.e., the mean value computation task)?
+Please also briefly describe your strategy(ies).]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text />
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="height">100</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">strategy</alias>
+</variables>
+</item>
+</question>
+<question>
+<description>comment</description>
+<class>text</class>
+<title>Do you have any further comments about the study (e.g., that you found something unclear or that you misunderstood the task at times)?</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">2</attr>
+<attr id="number">no</attr>
+</attributes.specific>
+<item>
+<text />
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="height">100</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">comment</alias>
+</variables>
+</item>
+</question>
+<question>
+<description>counting</description>
+<class>select</class>
+<title>
+<![CDATA[When working on the mean value computation task, a possible strategy is to determine whether the majority of the numbers' first digits are (a) less than 5 or (b) 5 or greater. 
+Did you use this strategy when working on the task?]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">4</attr>
+<attr id="pos">3</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text>yes</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>no</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>counting_freq</description>
+<class>scale</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about the mean value computation task</h1></div>
+<p>Please indicate the percentage of trials  in which you used the strategy to count whether the majority of the first digits of the numbers displayed was (a) smaller than 5 or (b) 5 or greater.</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<labels>
+<li i="1"><![CDATA[<b><br>10 %<br></b>]]></li>
+<li i="2"><![CDATA[<b><br>20 %<br></b>]]></li>
+<li i="3"><![CDATA[<b><br>30 %<br></b>]]></li>
+<li i="4"><![CDATA[<b><br>40 %<br></b>]]></li>
+<li i="5"><![CDATA[<b><br>50 %<br></b>]]></li>
+<li i="6"><![CDATA[<b><br>60 %<br></b>]]></li>
+<li i="7"><![CDATA[<b><br>70 %<br></b>]]></li>
+<li i="8"><![CDATA[<b><br>80 %<br></b>]]></li>
+<li i="9"><![CDATA[<b><br>90 %<br></b>]]></li>
+<li i="10"><![CDATA[<b><br>100 %<br></b>]]></li>
+</labels>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">4</attr>
+<attr id="scale.label_align">outside</attr>
+<attr id="scale.metrics.extrema">100</attr>
+<attr id="scale.display">complete</attr>
+<attr id="number">no</attr>
+<attr id="scale.niveau">10</attr>
+<attr id="restrictions.answered">yes</attr>
+<attr id="alignment">center</attr>
+<attr id="composition">extended</attr>
+</attributes.specific>
+<item>
+<text />
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>numbs_regarded</description>
+<class>text</class>
+<title>On average, how many of the 16 numbers displayed did you take into account when deciding whether the mean was smaller than 500 or larger than 500?</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">6</attr>
+<attr id="pos">5</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text />
+<suffix>numbers</suffix>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="width">100</attr>
+<attr id="restrictions.charset">number</attr>
+<attr id="restrictions.min">1</attr>
+<attr id="restrictions.max">16</attr>
+</attributes.specific>
+</item>
+</question>
+<question>
+<description>last_numbs</description>
+<class>scale</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about the mean value computation task</h1></div>
+<p>Please indicate the extent to which you agree with the following statement.</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<labels>
+<li i="1"><![CDATA[<b><br>1<br>do not agree at all</b>]]></li>
+<li i="2"><![CDATA[<b><br>2<br><br><br></b>]]></li>
+<li i="3"><![CDATA[<b><br>3<br><br><br></b>]]></li>
+<li i="4"><![CDATA[<b><br>4<br><br><br></b>]]></li>
+<li i="5"><![CDATA[<b><br>5<br><br><br></b>]]></li>
+<li i="6"><![CDATA[<b><br>6<br><br><br></b>]]></li>
+<li i="7"><![CDATA[<b><br>7<br><br><br></b>]]></li>
+<li i="8"><![CDATA[<b><br>8<br><br><br></b>]]></li>
+<li i="9"><![CDATA[<b><br>9<br><br><br></b>]]></li>
+<li i="10"><![CDATA[<b><br>10<br>strongly agree</b>]]></li>
+</labels>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">7</attr>
+<attr id="pos">6</attr>
+<attr id="scale.metrics.extrema">60</attr>
+<attr id="scale.display">complete</attr>
+<attr id="number">no</attr>
+<attr id="scale.niveau">10</attr>
+<attr id="restrictions.answered">yes</attr>
+<attr id="composition">default</attr>
+</attributes.specific>
+<item>
+<text>In each round, I felt like the number I looked at last was particularly crucial for my decision.</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+</question>
+</section>
+<section>
+<title>parameter</title>
+<attributes.specific program="ofb">
+<attr id="id">UR</attr>
+<attr id="pos">4</attr>
+</attributes.specific>
+<question>
+<description>parameter</description>
+<class>client</class>
+<title />
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="settings">
+<li i="6">yes</li>
+<li i="10">pp</li>
+<li i="11">ext</li>
+<li i="12">group</li>
+<li i="23">yes</li>
+</attr>
+</attributes.specific>
+<variables>
+<alias ix="6">screen_width</alias>
+<alias ix="7">screen_height</alias>
+<alias ix="10">pp</alias>
+<alias ix="11">ext</alias>
+<alias ix="12">group</alias>
+<alias ix="23">referer</alias>
+</variables>
+</question>
+</section>
+<section>
+<title>bias_select</title>
+<attributes.specific program="ofb">
+<attr id="id">BN</attr>
+<attr id="pos">5</attr>
+</attributes.specific>
+<question>
+<description>bias_select</description>
+<class>dropdown</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about the mean value computation task</h1></div>
+
+<p>Please select which numbers where more noticeable to you.</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">bias_select</alias>
+</variables>
+<item>
+<text>low numbers</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+</item>
+<item>
+<text>high numbers</text>
+<attributes.specific program="ofb">
+<attr id="id">2</attr>
+<attr id="pos">2</attr>
+</attributes.specific>
+</item>
+<item>
+<text>other:</text>
+<textinput>yes</textinput>
+<attributes.specific program="ofb">
+<attr id="id">3</attr>
+<attr id="pos">3</attr>
+<attr id="width">350</attr>
+</attributes.specific>
+</item>
+</question>
+</section>
+<section>
+<title>bias</title>
+<attributes.specific program="ofb">
+<attr id="id">BI</attr>
+<attr id="pos">6</attr>
+</attributes.specific>
+<question>
+<description>bias</description>
+<class>scale</class>
+<title>Please indicate the extent to which you agree with the following statement.</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<labels>
+<li i="1"><![CDATA[<b><br>1<br>do not agree at all</b>]]></li>
+<li i="2"><![CDATA[<b><br>2<br><br><br></b>]]></li>
+<li i="3"><![CDATA[<b><br>3<br><br><br></b>]]></li>
+<li i="4"><![CDATA[<b><br>4<br><br><br></b>]]></li>
+<li i="5"><![CDATA[<b><br>5<br><br><br></b>]]></li>
+<li i="6"><![CDATA[<b><br>6<br><br><br></b>]]></li>
+<li i="7"><![CDATA[<b><br>7<br><br><br></b>]]></li>
+<li i="8"><![CDATA[<b><br>8<br><br><br></b>]]></li>
+<li i="9"><![CDATA[<b><br>9<br><br><br></b>]]></li>
+<li i="10"><![CDATA[<b><br>10<br>strongly agree</b>]]></li>
+<li i="11"><![CDATA[<b>100 %</b>]]></li>
+</labels>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="scale.metrics.extrema">60</attr>
+<attr id="scale.display">complete</attr>
+<attr id="number">no</attr>
+<attr id="scale.niveau">10</attr>
+<attr id="restrictions.answered">yes</attr>
+<attr id="composition">default</attr>
+</attributes.specific>
+<item>
+<text>I noticed some numbers more than others.</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">bias</alias>
+</variables>
+</item>
+</question>
+</section>
+<section>
+<title>bias_strategy</title>
+<attributes.specific program="ofb">
+<attr id="id">BS</attr>
+<attr id="pos">7</attr>
+</attributes.specific>
+<question>
+<description>bias_strategy</description>
+<class>scale</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about the mean value computation task</h1></div>
+<p>Please indicate the extent to which you agree with the following statement.</p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<labels>
+<li i="1"><![CDATA[<b><br>1<br>do not agree at all</b>]]></li>
+<li i="2"><![CDATA[<b><br>2<br><br><br></b>]]></li>
+<li i="3"><![CDATA[<b><br>3<br><br><br></b>]]></li>
+<li i="4"><![CDATA[<b><br>4<br><br><br></b>]]></li>
+<li i="5"><![CDATA[<b><br>5<br><br><br></b>]]></li>
+<li i="6"><![CDATA[<b><br>6<br><br><br></b>]]></li>
+<li i="7"><![CDATA[<b><br>7<br><br><br></b>]]></li>
+<li i="8"><![CDATA[<b><br>8<br><br><br></b>]]></li>
+<li i="9"><![CDATA[<b><br>9<br><br><br></b>]]></li>
+<li i="10"><![CDATA[<b><br>10<br>strongly agree</b>]]></li>
+<li i="11"><![CDATA[<b>100 %</b>]]></li>
+</labels>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="scale.metrics.extrema">65</attr>
+<attr id="scale.display">complete</attr>
+<attr id="number">no</attr>
+<attr id="scale.niveau">10</attr>
+<attr id="restrictions.answered">yes</attr>
+<attr id="composition">default</attr>
+</attributes.specific>
+<item>
+<text>
+<![CDATA[%numbers% were more noticeable to me, so  I chose<br> "%answer%“ when I was unsure.]]>
+</text>
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+</attributes.specific>
+<variables>
+<alias ix="0">bias_strategy</alias>
+</variables>
+</item>
+</question>
+</section>
+<section>
+<title>instructions_and_task</title>
+<attributes.specific program="ofb">
+<attr id="id">IN</attr>
+<attr id="pos">13</attr>
+</attributes.specific>
+<question>
+<description>inst_first glance</description>
+<class>text</class>
+<title>
+<![CDATA[<div align="center" style="padding: 0px 0px 12px;"><h1>Questions about the mean value computation task</h1></div>
+<p>An important aim of this study is to test the instructions given to you. <br>During the mean value computation task you were instructed to take an <font color = "blue"><u>educated guess</u></font>, meaning to choose the answer that seemed most probable <font color = "blue"><u>at first glance</u></font>, even without complete certainty of its correctness.<br><br>
+What was your understanding of this instruction? </p>]]>
+</title>
+<explanation />
+<inputPosition>right</inputPosition>
+<order>default</order>
+<attributes.specific program="ofb">
+<attr id="id">5</attr>
+<attr id="pos">1</attr>
+<attr id="number">no</attr>
+<attr id="restrictions.answered">yes</attr>
+</attributes.specific>
+<item>
+<text />
+<attributes.specific program="ofb">
+<attr id="id">1</attr>
+<attr id="pos">1</attr>
+<attr id="height">100</attr>
+</attributes.specific>
+</item>
+</question>
+</section>
+<surveyLayout version="2.4" program="oFb" progversion="3.7.02 1378">
+<name>neutral</name>
+<title>SoSci Survey Neutral</title>
+<template>
+<![CDATA[<!DOCTYPE html>
+<html>
+<head>
+%head%
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+body { padding-bottom: 20px }
+div.questionary { min-width: 320px; max-width: %width%; padding: 0 10px; margin: 0 auto; box-sizing: border-box; }
+div#s2t-logo { margin-top: 18px }
+img.s2-logo { max-width: 100%; vertical-align: top }
+div#s2t-progress { width: 200px; float: right; margin: 0 0 20px 32px }
+.buttonControl { padding-top: 0; padding-bottom: 16px }
+div.progressbar { height: 20px; border-color: #AAAAAA }
+div.progressbar div.progresstext { top: 4px }
+hr { height: 2px; border: 0px; background-color: transparent; border-bottom: 2px solid %color.4%; margin: 24px 0px 28px 0px; }
+a { text-decoration: none; }
+
+/* Center footer on smartphone */
+@media (max-width: 450px) {
+  div#s2t-controls { text-align: center }
+  div#s2t-progress { left: 0; right: 0; margin: 0 auto 10px auto; float: none }
+  div#s2t-footer{ text-align: center }
+}
+
+/* No auto-zoom on iOS smartphones */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (max-device-width:1024px) { 
+  select,
+  textarea,
+  input[type="text"],
+  input[type="number"],
+  input[type="password"] { font-size: 16px }
+}
+</style>
+</head>
+<body>
+<div class="questionary">
+  <div id="s2t-logo">%logo%</div>
+  <hr style="margin-top: 12px;">
+  %form.open%
+  <div id="s2t-content">
+  %questionnaire%
+  </div>
+  <hr style="margin-bottom: 14px;">
+  <div id="s2t-footer">
+    <div id="s2t-progress">%progress%</div>
+    <div id="s2t-controls">
+      %button.control%
+    </div>
+    %imprint%
+  </div>
+  %form.close%
+</div>
+</body>
+</html>]]>
+</template>
+<defaultStatus>yes</defaultStatus>
+<copyright>
+<![CDATA[(c)2005-2015 SoSci Survey
+Standard-Layout für SoSci Survey
+Freigegeben zur Veränderung und Weitergabe]]>
+</copyright>
+<attributes.specific program="ofb">
+<attr id="item.residual.style">border-left: 2px solid %color.4%;</attr>
+<attr id="item.balloon.style">font-size: 10px; margin: 0px 0px 4px 0px;</attr>
+<attr id="item.dots.style">margin-left: 16px; text-indent: -16px;</attr>
+<attr id="input.balloon.style">font-size: 11px; border: 1px solid %color.4%;</attr>
+<attr id="input.scale.vertical-align">middle</attr>
+<attr id="color.3">EEEEEE</attr>
+<attr id="color.4">CCCCCC</attr>
+<attr id="color.5">FFF6C0</attr>
+<attr id="color.6">FF9900</attr>
+<attr id="color.7">DDCCFF</attr>
+<attr id="color.8">605287</attr>
+<attr id="color.link.default">color.8</attr>
+<attr id="color.link.hover">color.6</attr>
+<attr id="spacing.items">12px</attr>
+<attr id="title.style">font-weight: bold; margin-bottom: 0.5em;</attr>
+<attr id="opener.style">font-weight: bold; font-weight: normal; padding: 0px 0px 3px 3px; vertical-align: bottom;</attr>
+<attr id="selectable.backgroundInactive">color.3</attr>
+<attr id="selectable.borderInactive">color.4</attr>
+<attr id="selectable.backgroundSelected">color.5</attr>
+<attr id="selectable.borderSelected">color.6</attr>
+<attr id="selectable.borderAvailable">color.4</attr>
+</attributes.specific>
+</surveyLayout>
+<layoutTexts>
+<layoutText id="default.imprint"><txt lng="eng"><![CDATA[<a href="mailto:j.liss@email.uni-kiel.de">Julia V. Liss, M.Sc.</a>,  Kiel University – 2024]]></txt></layoutText>
+<layoutText id="default.next"><txt lng="eng">Continue</txt></layoutText>
+</layoutTexts>
+<questionnaire>
+<title>Fragebogen</title>
+<attributes.specific program="ofb">
+<attr id="id">base</attr>
+<attr id="content">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;questionnaire&gt;
+
+&lt;!-- Seite 1 --&gt;
+&lt;page intID=&quot;1&quot;&gt;
+&lt;html intID=&quot;38&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about the mean value computation task&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;UR01&quot; intID=&quot;6&quot; /&gt;
+&lt;question id=&quot;ST01&quot; intID=&quot;2&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 2 --&gt;
+&lt;page intID=&quot;3&quot;&gt;
+&lt;html intID=&quot;24&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about the mean value computation task&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;ST04&quot; intID=&quot;7&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 3 --&gt;
+&lt;page intID=&quot;9&quot;&gt;
+&lt;php intID=&quot;36&quot;&gt;&lt;![CDATA[
+if (value(&#039;ST04&#039;) == 1) {
+  question(&#039;ST05&#039;);
+}
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 4 --&gt;
+&lt;page intID=&quot;26&quot;&gt;
+&lt;html intID=&quot;11&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about the mean value computation task&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;ST06&quot; intID=&quot;27&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 5 --&gt;
+&lt;page intID=&quot;29&quot;&gt;
+&lt;question id=&quot;ST07&quot; intID=&quot;35&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 6 --&gt;
+&lt;page intID=&quot;49&quot;&gt;
+&lt;html intID=&quot;53&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about the mean value computation task&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;BI01&quot; intID=&quot;51&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 7 --&gt;
+&lt;page intID=&quot;52&quot;&gt;
+&lt;info&gt;bias_select&lt;/info&gt;
+&lt;php intID=&quot;50&quot;&gt;&lt;![CDATA[
+if (value(&#039;bias&#039;) &gt; 1) {
+  question(&#039;BN01&#039;);
+}
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 8 --&gt;
+&lt;page intID=&quot;54&quot;&gt;
+&lt;info&gt;bias_strategy&lt;/info&gt;
+&lt;php intID=&quot;55&quot;&gt;&lt;![CDATA[
+if (value(&#039;bias&#039;) &gt; 1) {
+    if (value(&#039;bias_select&#039;) == 1) {
+        replace(&#039;%numbers%&#039;, &#039;Low numbers&#039;);
+        replace(&#039;%answer%&#039;, &#039;&gt; 500&#039;);
+    } elseif (value(&#039;bias_select&#039;) == 2){
+        replace(&#039;%numbers%&#039;, &#039;High numbers&#039;);
+        replace(&#039;%answer%&#039;, &#039;&lt; 500&#039;);
+    } else {
+    goToPage(&#039;IN05&#039;);
+    }
+}
+
+if (value(&#039;bias&#039;) &gt; 1) {
+  question(&#039;BS01&#039;);
+}
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 9 --&gt;
+&lt;page ident=&quot;IN05&quot; intID=&quot;37&quot;&gt;
+&lt;php intID=&quot;48&quot;&gt;&lt;![CDATA[
+//will only work when combined with pavlovia
+
+if (value(&#039;UR01_RV3&#039;) == &quot;guess&quot;) {
+  question(&#039;IN05&#039;);
+}
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 10 --&gt;
+&lt;page intID=&quot;5&quot;&gt;
+&lt;html intID=&quot;40&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about the mean value computation task&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;ST03&quot; intID=&quot;13&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 11 --&gt;
+&lt;page intID=&quot;15&quot;&gt;
+&lt;html intID=&quot;57&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about yourself&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;DE01&quot; intID=&quot;21&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 12 --&gt;
+&lt;page intID=&quot;39&quot;&gt;
+&lt;html intID=&quot;56&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about yourself&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;DE11&quot; intID=&quot;43&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 13 --&gt;
+&lt;page intID=&quot;68&quot;&gt;
+&lt;php intID=&quot;69&quot;&gt;&lt;![CDATA[
+if (value(&#039;DE11&#039;) == 3 | value(&#039;DE11&#039;) == 4) {
+    question(&#039;DE24&#039;);
+}
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 14 --&gt;
+&lt;page intID=&quot;59&quot;&gt;
+&lt;html intID=&quot;62&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about yourself&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;DE25&quot; intID=&quot;60&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 15 --&gt;
+&lt;page intID=&quot;61&quot;&gt;
+&lt;php intID=&quot;63&quot;&gt;&lt;![CDATA[
+if (value(&#039;DE25&#039;) == 2) {
+    goToPage(&#039;student&#039;);
+}
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 16 --&gt;
+&lt;page intID=&quot;41&quot;&gt;
+&lt;html intID=&quot;44&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about yourself&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;DE12&quot; intID=&quot;42&quot; /&gt;
+&lt;html intID=&quot;65&quot;&gt;&lt;![CDATA[
+&lt;table border=&quot;1&quot;; cellpadding=&quot;5&quot;; cellspacing=&quot;0&quot;; style=&quot;width:60%;&quot;&gt;      
+&lt;colgroup&gt;   
+    &lt;col width=&quot;30%&quot;&gt;   
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+&lt;/colgroup&gt;
+&lt;tr&gt;
+    &lt;td&gt;Grade&lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; A &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; B &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; C &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; D &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; F &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;         
+    &lt;td&gt;Percentage *&lt;/td&gt;  
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 90 % &lt;/td&gt;  
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 80 % &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 70 % &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 60 % &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;lt 60 % &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td&gt;Point equivalents / GAD&lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 4.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 3.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 2.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 1.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 0 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;br&gt;
+* &quot;A&quot; refers to percentages of (including) 90 % and above, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;B&quot; refers to percentages of(including) 80 % &amp;ndash; 89 %, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;C&quot; refers to percentages of (including) 70 % &amp;ndash; 79 %, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;D&quot; refers to percentages of(including) 60 % &amp;ndash; 69 %, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;F&quot; refers to percentages below 60 %.
+]]&gt;&lt;/html&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 17 --&gt;
+&lt;page intID=&quot;45&quot;&gt;
+&lt;html intID=&quot;46&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Questions about yourself&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;question id=&quot;DE13&quot; intID=&quot;47&quot; /&gt;
+&lt;html intID=&quot;66&quot;&gt;&lt;![CDATA[
+&lt;table border=&quot;1&quot;; cellpadding=&quot;5&quot;; cellspacing=&quot;0&quot;; style=&quot;width:60%;&quot;&gt;      
+&lt;colgroup&gt;   
+    &lt;col width=&quot;30%&quot;&gt;   
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+    &lt;col width=&quot;10%&quot;&gt;
+&lt;/colgroup&gt;
+&lt;tr&gt;
+    &lt;td&gt;Grade&lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; A &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; B &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; C &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; D &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; F &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;         
+    &lt;td&gt;Percentage&lt;/td&gt;  
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 90 % &lt;/td&gt;  
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 80 % &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 70 % &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;ge; 60 % &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; &amp;lt 60 % &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td&gt;Point equivalents / GAD&lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 4.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 3.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 2.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 1.0 &lt;/td&gt;
+    &lt;td style=&quot;text-align: center; vertical-align: middle;&quot;&gt; 0 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;br&gt;
+&lt;br&gt;
+* &quot;A&quot; refers to percentages of (including) 90 % and above, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;B&quot; refers to percentages of(including) 80 % &amp;ndash; 89 %, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;C&quot; refers to percentages of (including) 70 % &amp;ndash; 79 %, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;D&quot; refers to percentages of(including) 60 % &amp;ndash; 69 %, &lt;br&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;F&quot; refers to percentages below 60 %.
+]]&gt;&lt;/html&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 18 --&gt;
+&lt;page ident=&quot;student&quot; intID=&quot;18&quot;&gt;
+&lt;question id=&quot;DE02&quot; intID=&quot;19&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 19 --&gt;
+&lt;page ident=&quot;psycho&quot; intID=&quot;20&quot;&gt;
+&lt;question id=&quot;DE03&quot; intID=&quot;17&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 20 --&gt;
+&lt;page ident=&quot;subject&quot; intID=&quot;22&quot;&gt;
+&lt;question id=&quot;DE04&quot; intID=&quot;16&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 21 --&gt;
+&lt;page ident=&quot;adult&quot; intID=&quot;25&quot;&gt;
+&lt;question id=&quot;DE05&quot; intID=&quot;12&quot; /&gt;
+&lt;question id=&quot;DE06&quot; intID=&quot;14&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 22 --&gt;
+&lt;page intID=&quot;23&quot;&gt;
+&lt;question id=&quot;DE07&quot; intID=&quot;8&quot; /&gt;
+&lt;question id=&quot;DE08&quot; intID=&quot;10&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 23 --&gt;
+&lt;page ident=&quot;datastorage&quot; intID=&quot;28&quot;&gt;
+&lt;html intID=&quot;67&quot;&gt;&lt;![CDATA[
+&lt;div align=&quot;center&quot; style=&quot;padding: 0px 0px 12px;&quot;&gt;&lt;h1&gt;Thank you for your time!&lt;/h1&gt;&lt;/div&gt;
+]]&gt;&lt;/html&gt;
+&lt;php intID=&quot;58&quot;&gt;&lt;![CDATA[
+if (value(&#039;UR01_RV3&#039;) == &quot;guess&quot;) {
+    replace(&#039;%inst%&#039;, &#039;to take an educated guess.&#039;);
+} else {
+    replace(&#039;%inst%&#039;, &#039;to only select an answer when you were fully confident of your choice.&#039;);
+}
+
+question(&#039;DA01&#039;);
+]]&gt;&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 24 --&gt;
+&lt;page intID=&quot;30&quot;&gt;
+&lt;question id=&quot;DA02&quot; intID=&quot;31&quot; /&gt;
+&lt;question id=&quot;DA03&quot; intID=&quot;32&quot; /&gt;
+&lt;/page&gt;
+
+
+&lt;!-- Seite 25 --&gt;
+&lt;page intID=&quot;33&quot;&gt;
+&lt;info&gt;redirect&lt;/info&gt;
+&lt;php intID=&quot;34&quot;&gt;
+redirect(&#039;https://app.prolific.com/submissions/complete?cc=C1BSS9X2&#039;, false);
+&lt;/php&gt;
+&lt;/page&gt;
+
+
+&lt;/questionnaire&gt;</attr>
+<attr id="panelForm">no</attr>
+<attr id="selection">1</attr>
+</attributes.specific>
+</questionnaire>
+</surveyProject>
