@@ -1,0 +1,1108 @@
+---
+title: "Guess What!"
+date: "December 2025"
+output: 
+  html_document:
+    code_folding: hide
+    toc: TRUE
+    toc_depth: 2
+    toc_float: true
+---
+
+```{r setup, include = F}
+#Load libraries
+library(afex)
+library(BayesFactor)
+library(broom)
+library(dplyr)
+library(effectsize)
+library(flextable)
+library(purrr)
+library(rempsyc)
+library(tidyr)
+
+#Set paths 
+root_path = "C:/Users/Administrator/Documents/GitHub_Kiel/mvct_upload/2_simulators/mvct/"
+path_to_behav = paste0(root_path, "behav_demo_data/")
+```
+
+```{r load_data, include=F}
+#Load behav
+load_and_process_behav = function(file_path) {
+  read.csv(file_path) %>%
+    dplyr::select(study, pp, cond, accuracy, starts_with("meanRT"), starts_with("skew"), starts_with("sym")) %>%
+    dplyr::mutate(across(c("pp", "cond"), factor))
+}
+file_path = paste0(path_to_behav, "result_empirical.csv")
+assign(paste0("behav"), load_and_process_behav(file_path))
+behav1 = behav[which(behav$study==1), ]
+behav2 = behav[which(behav$study==2), ]
+  
+#Load param
+bf_estimates = NULL
+for (study_nr in 1:2) {
+    estimates_path = sprintf("%s/estimates_param_estim_means/mvct_param_125ep_study%s_tukey1.5_net1.csv", root_path, study_nr)
+    print(estimates_path)
+    df = read.csv(estimates_path)
+    df$study_nr = study_nr
+    print(nrow(df))
+    bf_estimates = rbind(bf_estimates, df)
+}
+bf_estimates$v0 = bf_estimates$v0*-1
+bf_estimates$cond = factor(bf_estimates$cond, levels=c("guess", "control"), ordered = T)
+
+#Load demo
+file_path = paste0(path_to_behav, "/prepared1/demo_study", 1, ".csv")
+demo1 = read.csv(file_path)
+file_path = paste0(path_to_behav, "/prepared1/demo_study", 2, ".csv")
+demo2 = read.csv(file_path)
+demo1$group = factor(demo1$group, levels=c("guess", "control"), ordered = T)
+demo2$group = factor(demo2$group, levels=c("guess", "control"), ordered = T)
+```
+
+# Demographics
+
+```{r demo, include=T, warning=F, message=F}
+gender_summary = function(data, study_nr) {
+  tbl = table(data$gender)
+  prop = prop.table(tbl)
+  data.frame(gender = names(tbl), n = as.vector(tbl), prop = round(as.vector(prop), 3), study = study_nr)
+}
+gender_all = rbind(gender_summary(demo1, 1), gender_summary(demo2, 2))
+gender_all$gender = car::recode(gender_all$gender, 
+                        "'Cis female'='cisgender women';
+                        'Cis male'='cisgender men';
+                        'Nonbinary woman'='nonbinary women';
+                        'Trans* woman' = 'transgender women';
+                        'Trans* man' = 'transgender men'")
+describe_study = function(df, study_nr) {
+  subset_df = df[df$study == study_nr, ]
+  order_appearance = c("cisgender women", "cisgender men",
+                     "transgender women", "transgender men",
+                     "nonbinary", "nonbinary women",
+                     "prefer not to answer")
+  subset_df$gender = tolower(subset_df$gender)
+  subset_df$gender = factor(subset_df$gender, levels = order_appearance)
+  subset_df = subset_df[order(subset_df$gender), ]
+  phrases = mapply(function(gender, prop) {
+    percent = sprintf("%.2f%%", prop * 100)
+    if (tolower(gender) %in% c("prefer not to answer", "prefer not to disclose")) {
+      paste0("and ", percent, " preferred not to disclose their gender")
+    } else {
+      paste0(percent, " identified as ", tolower(gender))
+    }
+  }, subset_df$gender, subset_df$prop)
+  sentence = paste0("Of those, ", paste(phrases, collapse = ", "), ".")
+  return(sentence)
+}
+
+describe_sample = function(data, gender_df, study_nr) {
+  sizes = table(data$group)
+  sentence = paste0(
+    "In Study ", study_nr, ", the final sample sizes were ", 
+    format(sizes[1], big.mark = ","), " in the control condition and ",
+    format(sizes[2], big.mark = ","), " in the guessing condition. ",
+    describe_study(gender_df, study_nr), " Participants' mean age was ",
+    round(mean(data$age, na.rm = T), 2), " years (SD = ", round(sd(data$age, na.rm = T), 2), 
+    "), ranging from ", min(data$age, na.rm = T), " to ", max(data$age, na.rm = T), " years."
+  )
+  return(sentence)
+}
+
+cat(describe_sample(demo1, gender_all, 1), "\n\n")
+cat(describe_sample(demo2, gender_all, 2), "\n")
+```
+
+# Manipulation Check
+
+```{r manipulation_check, include=T, warning=F, message=F}
+make_group_sentence = function(data, dv, group_var = "group", group1 = "guess", group2 = "control") {
+  my_desc = data %>%
+    dplyr::group_by(.data[[group_var]]) %>%
+    dplyr::summarise(mean = round(mean(.data[[dv]], na.rm = TRUE), 2), sd = round(sd(.data[[dv]],  na.rm = TRUE), 2),
+                     .groups = "drop")
+  
+  desc = sprintf(
+    "%s group (M = %.2f, SD = %.2f) vs. %s group (M = %.2f, SD = %.2f)",
+    group1, my_desc$mean[my_desc[[group_var]] == group1], my_desc$sd  [my_desc[[group_var]] == group1],
+    group2, my_desc$mean[my_desc[[group_var]] == group2], my_desc$sd  [my_desc[[group_var]] == group2]
+  )
+  
+  my_ttest = rempsyc::nice_t_test(data = data, group = group_var, response = dv, paired = FALSE, var.equal = TRUE)
+  
+  df1 = data[data[[group_var]] == group1, dv]
+  df2 = data[data[[group_var]] == group2, dv]
+  
+  bf = BayesFactor::ttestBF(x = df1, y = df2, paired = FALSE)
+  bf_value = exp(bf@bayesFactor$bf)
+  
+  p_apa = if (my_ttest$p < .001) {
+    "p < .001"
+  } else {
+    paste0("p = ", sub("^0", "", sprintf("%.3f", my_ttest$p)))
+  }
+  
+  t_part = sprintf(", t(%.0f) = %.2f, %s, d = %.2f, 95%% CI [%.2f, %.2f], BF10 = %.2f",
+    my_ttest$df, my_ttest$t, p_apa, my_ttest$d, my_ttest$CI_lower, my_ttest$CI_upper, bf_value
+  )
+  
+  if (dv == "educated_slider.response") {
+    var = "educated guessing"
+  } else if (dv == "random_slider.response") {
+    var = "random guessing"
+  }
+  
+  sentence = paste0("For ", var, ": ", desc, t_part)
+  return(sentence)
+}
+
+cat("Study 1\n", make_group_sentence(data = demo1, dv = "educated_slider.response"), "\n",
+    make_group_sentence(data = demo1, dv = "random_slider.response"), "\n")
+
+cat("Study 2\n", make_group_sentence(data = demo2, dv = "educated_slider.response"), "\n",
+    make_group_sentence(data = demo2, dv = "random_slider.response"))
+```
+
+# Behavioral Variables 
+## Descriptives and ANOVAs
+
+```{r desc_behav, include=F, warning=F, message=F}
+summarize_behav_data = function(data, study_nr, add_symbol = FALSE) {
+  stats = c("accuracy", "meanRT_correct")
+  group_vars = if (add_symbol) c("symbol", "cond") else "cond"
+  summary = purrr::map_dfr(stats, function(stat) {
+    data %>%
+      dplyr::group_by(across(all_of(group_vars))) %>%
+      dplyr::summarise(
+        mean = mean(.data[[stat]], na.rm = TRUE),
+        sd   = sd(.data[[stat]], na.rm = TRUE),
+        .groups = "drop"
+      ) %>%
+      dplyr::mutate(stat = stat)
+  })
+  summary = summary %>%
+    tidyr::pivot_wider(
+      names_from = cond,
+      values_from = c(mean, sd),
+      names_glue = "{cond}_{.value}"
+    )
+  if (!add_symbol) {
+    summary = summary %>% dplyr::mutate(symbol = NA)
+  }
+  summary = summary %>%
+    dplyr::mutate(study_nr = study_nr, .before = 1) %>%
+    dplyr::select(study_nr, stat, symbol, guess_mean, guess_sd, control_mean, control_sd) %>%
+    dplyr::mutate(across(where(is.numeric), ~ round(.x, 2)))
+  return(summary)
+}
+
+summary_with_symbol = dplyr::bind_rows(
+  summarize_behav_data(behav1, study_nr = 1, add_symbol = TRUE),
+  summarize_behav_data(behav2, study_nr = 2, add_symbol = TRUE))
+
+summary_with_symbol = summary_with_symbol %>%
+  dplyr::mutate(
+    across(
+      c(guess_mean, control_mean, guess_sd, control_sd),
+      ~ dplyr::if_else(
+          stat == "accuracy",
+          sub("^0\\.", ".", format(round(.x, 2), nsmall = 2)),
+          format(round(.x, 2), nsmall = 2)
+        )
+    )
+  )
+
+summary_with_symbol$stat = car::recode(summary_with_symbol$stat, "'accuracy'='Accuracy rate'; 'meanRT_correct'='Mean RT (s)'")
+summary_with_symbol$symbol = car::recode(summary_with_symbol$symbol, "0='Low-mean stimulus'; 1='High-mean stimulus'")
+#summary_with_symbol
+
+summary_with_symbol = rbind(
+  summary_with_symbol[1:2, ],
+  c(1, rep("", ncol(summary_with_symbol) - 1)),
+  summary_with_symbol[3:4, ],
+  c(1, rep("", ncol(summary_with_symbol) - 1)),
+  summary_with_symbol[5:6, ],
+  c(2, rep("", ncol(summary_with_symbol) - 1)),
+  summary_with_symbol[7:8, ],
+  c(2, rep("", ncol(summary_with_symbol) - 1)))
+```
+
+```{r aovs_behav, include=F, warning=F, message=F}
+anova_table_for = function(data, dv, add_symbol = TRUE, ci = 0.95) {
+  
+  stopifnot(all(c("pp","cond") %in% names(data)))
+  if (add_symbol && !"symbol" %in% names(data)) stop("add_symbol=TRUE but 'symbol' missing.")
+  if (!dv %in% names(data)) stop(sprintf("DV '%s' not in data.", dv))
+
+  dat = data %>% mutate(cond = as.factor(cond), pp = as.factor(pp), symbol = if (add_symbol) as.factor(symbol) else symbol)
+
+  within_factors = if (add_symbol) "symbol" else NULL
+
+  aov_res = afex::aov_ez(
+    id = "pp", dv = dv, data = dat,
+    between = "cond", within = within_factors,
+    detailed = TRUE, anova_table = list(correction = "GG", es = "ges")
+  )
+
+  aov_df = as.data.frame(aov_res$anova_table) %>%
+    tibble::rownames_to_column("effect") %>%
+    rename(num_df = `num Df`, den_df = `den Df`, F = .data$F, p = `Pr(>F)`, ges = ges) %>%
+    mutate(df = paste0(num_df, ", ", den_df)) %>%
+    dplyr::select(effect, `f_ratio` = F, df, p, ges)
+
+  eta_form = if (add_symbol) {
+    stats::as.formula(paste(dv, "~ cond * symbol + Error(pp / symbol)"))
+  } else {
+    stats::as.formula(paste(dv, "~ cond + Error(pp)"))
+  }
+  eta_model = stats::aov(eta_form, data = dat)
+
+  eta_tab = effectsize::eta_squared(
+    eta_model, generalized = T, partial=F, ci = ci, alternative="two.sided"
+  ) %>%
+    as.data.frame() %>%
+    dplyr::select(effect = Parameter, eta_squared = Eta2_generalized, LL = CI_low, UL = CI_high)
+
+  out = aov_df %>%
+    left_join(eta_tab, by = "effect") %>%
+    filter(effect %in% c("cond", "symbol", "cond:symbol"))
+
+  dat_bf = dat %>% filter(!is.na(.data[[dv]]))
+
+  bf_formula = if (add_symbol) {
+    stats::as.formula(paste(dv, "~ cond * symbol + pp"))
+  } else {
+    stats::as.formula(paste(dv, "~ cond + pp"))
+  }
+
+  bf_tbl = tryCatch({
+    set.seed(22032000)  
+    bf_res = BayesFactor::anovaBF(
+      bf_formula, data = dat_bf, whichRandom = "pp", whichModels = "withmain"#, iterations = 10000
+    )
+    tibble(
+      formula = names(bf_res@numerator),
+      bf10    = as.numeric(BayesFactor::extractBF(bf_res, onlybf = TRUE))
+    )
+  }, error = function(e) tibble(formula = character(), bf10 = numeric()))
+
+  bf_effects = tibble(
+    effect = c("cond", "symbol", "cond:symbol"),
+    bf10 = c(
+      bf_tbl %>% filter(formula == "cond + pp")   %>% pull(bf10) %>% {if(length(.)==0) NA_real_ else .},
+      bf_tbl %>% filter(formula == "symbol + pp") %>% pull(bf10) %>% {if(length(.)==0) NA_real_ else .},
+      {
+        base = bf_tbl %>% filter(formula == "cond + symbol + pp") %>% pull(bf10)
+        full = bf_tbl %>% filter(formula == "cond + symbol + cond:symbol + pp") %>% pull(bf10)
+        if (length(base)==1 && length(full)==1 && is.finite(base) && base>0) full/base else NA_real_
+      }
+    )
+  )
+
+  out %>% dplyr::left_join(bf_effects, by = "effect") %>%
+    dplyr::mutate(
+      `f_ratio` = round(`f_ratio`, 2),
+      p = ifelse(p < .001, "< .001", sub("^0\\.", ".", format(round(p, 3), nsmall = 3))
+                 ),
+      eta_squared = sub("^0\\.", ".", format(round(eta_squared, 3), nsmall = 3)
+                        ),
+      CI = paste0("[", sub("^0\\.", ".", format(round(LL, 3), nsmall = 3)), ", ",
+                  sub("^0\\.", ".", format(round(UL, 3), nsmall = 3)), "]"
+                  ),
+      bf10 = ifelse(is.na(bf10), NA, sprintf("%.2f", bf10))
+      ) %>% 
+    dplyr::select(effect, `f_ratio`, df, p, eta_squared, CI, bf10)
+}
+
+make_all_tables = function(study_ids = 1:2, dvs = c("accuracy", "meanRTlog_correct"), add_symbol = TRUE) {
+  res = list()
+  for (study_nr in study_ids) {
+    data_obj = get(paste0("behav", study_nr), inherits = TRUE)
+    for (dv in dvs) {
+      tab = anova_table_for(data_obj, dv = dv, add_symbol = add_symbol)
+      res[[paste0("Study", study_nr, "_", dv)]] = tab
+      #cat("\n=== Study ", study_nr, " | DV: ", dv, " ===\n", sep = "")
+      #print(tab)
+    }
+  }
+  invisible(res)  
+}
+
+tables = make_all_tables()
+export_all_tables = function(tables_list) {
+  bind_rows(imap(tables_list, ~ mutate(.x, Study_DV = .y)), .id = NULL) %>% relocate(Study_DV, .before = 1)
+}
+aov_table = export_all_tables(tables)
+aov_table = aov_table %>% tidyr::extract(Study_DV, into = c("study_nr", "stat"), regex = "Study(\\d+)_(.+)", convert = TRUE)
+aov_table$stat = car::recode(aov_table$stat, "'accuracy'='Accuracy rate'; 'meanRTlog_correct'='Mean RT (s)'")
+aov_table = aov_table %>% dplyr::mutate(effect = dplyr::recode(effect, "cond" = "G", "symbol" = "S", "cond:symbol" = "G × S"))
+#aov_table
+```
+
+```{r table_behav, include=T, warning=F, message=F}
+behav_table = cbind(summary_with_symbol, aov_table[, 3:ncol(aov_table)])
+aov_dfs = unique(behav_table$df)
+behav_table$df = NULL
+behav_table$stat = NULL
+behav_table$study_nr = NULL
+bf_num = as.numeric(behav_table$bf10)
+behav_table$bf10 = ifelse(
+  !is.na(bf_num) & bf_num > 1000,
+  paste0(formatC(bf_num / 10^floor(log10(bf_num)), digits = 2, format = "f"), " × 10^", floor(log10(bf_num))),
+  sprintf("%.2f", bf_num)
+)
+
+behav_table = rbind(
+  c("Study 1", rep("", ncol(behav_table) - 1)),
+  c("Accuracy rate", rep("", ncol(behav_table) - 1)),
+  behav_table[1:3, ],
+  c("Mean RT (s)", rep("", ncol(behav_table) - 1)),
+  behav_table[4:6, ],
+  c("Study 2", rep("", ncol(behav_table) - 1)),
+  c("Accuracy rate", rep("", ncol(behav_table) - 1)),
+  behav_table[7:9, ],
+  c("Mean RT (s)", rep("", ncol(behav_table) - 1)),
+  behav_table[10:12, ])
+
+ft_behav = flextable::flextable(behav_table)
+new_col_names = c("Source", rep(c("M", "SD"), 2), "Effect", "F", "p", "eta", "CI", "BF10")
+ft_behav = flextable::set_header_labels(ft_behav, values = setNames(new_col_names, names(behav_table)))
+
+ft_behav = flextable::compose(ft_behav, part = "header", i = 1, j = 7, 
+                              value = flextable::as_paragraph(flextable::as_i("F"), " ratio"))
+ft_behav = flextable::compose(ft_behav, part = "header", i = 1, j = 9,  
+                              value = flextable::as_paragraph("\u03B7", flextable::as_sub("G"), flextable::as_sup("2")))
+ft_behav = flextable::compose(ft_behav, part = "header",
+  i = 1, j = 10,  value = flextable::as_paragraph("95% CI for ", flextable::as_i("d")))
+ft_behav = flextable::compose(ft_behav, part = "header",  i = 1, j = 11,  
+                              value = flextable::as_paragraph("BF", flextable::as_sub("10")))
+
+italic_indices = which(new_col_names %in% c("M", "SD", "p"))
+ft_behav = italic(ft_behav, italic = TRUE, i = 1, j = italic_indices, part = "header")
+
+ft_behav = flextable::add_header_row(ft_behav, values = c("", "Guessing Group", "Control Group", ""), colwidths = c(1, 2, 2, 6)
+)
+ft_behav = autofit(ft_behav)
+
+ft_behav = ft_behav %>%
+  add_footer_lines(sprintf(
+    "Note. Each analysis of variance used df = %s in Study 1 and df = %s in Study 2.",
+    aov_dfs[1], aov_dfs[2])
+  )
+ft_behav
+```
+
+
+## t-Tests
+
+```{r ttests_behav, include=T, warning=F, message=F}
+reshape_behav = function(data, add_symbol = FALSE) {
+  long_data = data %>%
+    dplyr::select(pp, cond, dplyr::all_of(if (add_symbol) "symbol"), meanRTlog_correct) %>%
+    dplyr::mutate(rt = meanRTlog_correct, symbol = if (add_symbol) as.factor(symbol) else NULL) %>%
+    dplyr::select(-meanRTlog_correct)
+  return(long_data)
+}
+
+run_ttest = function(data, label, group_var = "symbol", filter_var = "symbol") {
+  df = data %>%
+    reshape_behav(add_symbol = TRUE) %>%
+    filter(.data[[filter_var]] == label) %>%
+    mutate(pp = as.numeric(pp)) %>%
+    filter(!is.na(rt)) %>%
+    as.data.frame()
+  
+  paired = group_var == "symbol"
+  
+  res = rempsyc::nice_t_test(
+    data = df, group = intersect(c("symbol", "cond"), group_var), response = "rt", paired = paired, var.equal = TRUE
+  )
+  
+  if (paired) {
+    wide_df = reshape(df[, c("pp", "symbol", "rt")],
+                       timevar = "symbol", idvar = "pp", direction = "wide")
+    colnames(wide_df) = c("pp", "rt0", "rt1")
+    wide_df = wide_df[complete.cases(wide_df), ]  # remove missing pairs
+    bf = BayesFactor::ttestBF(x = wide_df$rt0, y = wide_df$rt1, paired = TRUE)
+  } else {
+    group_vals = unique(df[[group_var]])
+    df1 = df[df[[group_var]] == group_vals[1], "rt"]
+    df2 = df[df[[group_var]] == group_vals[2], "rt"]
+    bf = BayesFactor::ttestBF(x = df1, y = df2, paired = FALSE)
+  }
+  
+  bf_value = exp(bf@bayesFactor$bf)
+  
+  if (group_var == "symbol") {
+    my_group_var = "stimulus types"
+  } else if (group_var == "cond") {
+    my_group_var = "groups"
+  } else {
+    my_group_var = group_var
+  }
+
+  if (label == 0) {
+    my_label = "low-mean stimuli"
+  } else if (label == 1) {
+    my_label = "high-mean stimuli"
+  } else {
+    my_label = label
+  }
+  
+  my_text = sprintf(
+    "Between %s, within %s; t(%s) = %.2f, p %s, d = %.2f, BF = %.2f",
+    my_group_var, my_label, res$df, round(res$t, 2),
+    if (res$p < .001) "< .001" else paste0("= ", round(res$p, 3)),
+    round(res$d, 2), round(bf_value, 2)
+  )
+  my_text
+}
+
+t11 = run_ttest(behav1, "control", group_var = "symbol", filter_var = "cond")
+t12 = run_ttest(behav1, "guess", group_var = "symbol", filter_var = "cond")
+t13 = run_ttest(behav1, 0, group_var = "cond", filter_var = "symbol")
+t14 = run_ttest(behav1, 1, group_var = "cond", filter_var = "symbol")
+cat("Study 1", t11, t12, t13, t14, sep="\n")
+t21 = run_ttest(behav2, "control", group_var = "symbol", filter_var = "cond")
+t22 = run_ttest(behav2, "guess", group_var = "symbol", filter_var = "cond")
+t23 = run_ttest(behav2, 0, group_var = "cond", filter_var = "symbol")
+t24 = run_ttest(behav2, 1, group_var = "cond", filter_var = "symbol")
+cat("Study 2", t21, t22, t23, t24, sep="\n")
+```
+
+# Parameter Estimates
+
+```{r params_table, include=T, warning=FALSE, message=FALSE}
+params = c("alpha", "a", "zr", "v0", "v1", "t0", "st0")
+analyze_ddm_params = function(bf_estimates, study_nr, 
+                               params = c("alpha", "a", "zr", "v0", "v1", "t0", "st0")) {
+  df = bf_estimates[bf_estimates$study_nr == study_nr, ]
+  
+  df$condition = df$cond
+  df$condition = factor(df$cond, levels=c("guess", "control"), ordered = T)
+  
+  comp = rempsyc::nice_t_test(response = params, group = "condition", paired = FALSE, data = df, var.equal = TRUE)
+  
+  cat("Alpha-values in Study", study_nr, "for control group: M = ",
+      sprintf("%.2f", mean(df[df$condition == "control", "alpha"], na.rm = TRUE)),
+      ", SD = ",
+      sprintf("%.2f", sd(df[df$condition == "control", "alpha"], na.rm = TRUE)),
+      ", Md = ",
+      sprintf("%.2f", median(df[df$condition == "control", "alpha"], na.rm = TRUE)),
+      "\n")
+  cat("Alpha-values in Study", study_nr, "for guessing group: M = ",
+      sprintf("%.2f", mean(df[df$condition == "guess", "alpha"], na.rm = TRUE)),
+      ", SD = ",
+      sprintf("%.2f", sd(df[df$condition == "guess", "alpha"], na.rm = TRUE)),
+      ", Md = ",
+      sprintf("%.2f", median(df[df$condition == "guess", "alpha"], na.rm = TRUE)))
+
+  summary_stats = lapply(params, function(param) {
+    m_control = mean(df[df$condition == "control", param], na.rm = TRUE)
+    sd_control = sd(df[df$condition == "control", param], na.rm = TRUE)
+    m_guess = mean(df[df$condition == "guess", param], na.rm = TRUE)
+    sd_guess = sd(df[df$condition == "guess", param], na.rm = TRUE)
+    data.frame(parameter = param, mean_guess = m_guess, sd_guess = sd_guess, mean_control = m_control, sd_control = sd_control
+    )
+  }) %>% dplyr::bind_rows()
+
+  bf_list = lapply(params, function(param) {
+    BayesFactor::ttestBF(x = df[df$condition == "guess", param], y = df[df$condition == "control", param], paired = FALSE)
+  })
+
+  bf_table = data.frame(parameter = params, BF = sapply(bf_list, function(bf) as.data.frame(bf)$bf))
+
+  comp_merged = summary_stats %>%
+    dplyr::left_join(comp, by = c("parameter" = "Dependent Variable")) %>%
+    dplyr::left_join(bf_table, by = "parameter") %>%
+    dplyr::mutate(study_nr = study_nr, .before = 1)
+  comp_merged = comp_merged %>% select(study_nr, parameter, everything())
+  return(comp_merged)
+}
+
+comp_df1 = analyze_ddm_params(bf_estimates, study_nr = 1)
+comp_df2 = analyze_ddm_params(bf_estimates, study_nr = 2)
+comp_df = rbind(comp_df1, comp_df2)
+
+comp_df_f = comp_df %>%
+  dplyr::mutate(
+    t = format(round(t, 2), nsmall = 2),
+    p = dplyr::case_when(as.numeric(p) < 0.001 ~ "< .001", 
+                         TRUE ~ as.character(gsub("^0", "", format(round(as.numeric(p), 3), nsmall = 3)))),
+    d = format(round(d, 2), nsmall = 2),
+    CI_lower = format(round(CI_lower, 2), nsmall = 2),
+    CI_upper = format(round(CI_upper, 2), nsmall = 2),
+    CI = paste0("[", CI_lower, ", ", CI_upper, "]"),
+    BF = format(round(BF, 2), nsmall = 2),
+    mean_control = ifelse(parameter == "t0" | parameter == "st0", 
+                          format(round(mean_control, 3), nsmall = 3), 
+                          format(round(mean_control, 2), nsmall = 2)),
+    mean_guess   = ifelse(parameter == "t0"| parameter == "st0", 
+                          format(round(mean_guess, 3), nsmall = 3), 
+                          format(round(mean_guess, 2), nsmall = 2)),
+    sd_control   = ifelse(parameter == "t0"| parameter == "st0", 
+                          format(round(sd_control, 3), nsmall = 3), 
+                          format(round(sd_control, 2), nsmall = 2)),
+    sd_guess     = ifelse(parameter == "t0"| parameter == "st0", 
+                          format(round(sd_guess, 3), nsmall = 3), 
+                          format(round(sd_guess, 2), nsmall = 2))
+  )
+
+t_dfs = unique(comp_df_f$df)
+comp_df_f = comp_df_f %>% dplyr::select(parameter, mean_guess, sd_guess, mean_control, sd_control, t, p, d, CI, BF)
+
+comp_df_f = comp_df_f %>% dplyr::mutate(dplyr::across(where(is.character), ~ gsub("-", "−", .x)))
+
+comp_df_f = rbind(
+  c("Study 1", rep("", ncol(comp_df_f) - 1)),
+  comp_df_f[1:7, ],
+  c("Study 2", rep("", ncol(comp_df_f) - 1)),
+  comp_df_f[8:14, ])
+
+ft_bf = flextable::flextable(comp_df_f)
+
+ft_bf = flextable::compose(ft_bf, j = "parameter", i = comp_df_f$parameter == "alpha", 
+                           value = flextable::as_paragraph("\u03B1"))
+ft_bf = flextable::compose(ft_bf, j = "parameter", i = comp_df_f$parameter == "a", 
+                           value = flextable::as_paragraph(flextable::as_i("a")))
+ft_bf = flextable::compose(ft_bf, j = "parameter", i = comp_df_f$parameter == "zr",
+  value = flextable::as_paragraph(flextable::as_i("z"), flextable::as_sub("r")))
+ft_bf = flextable::compose(ft_bf, j = "parameter", i = comp_df_f$parameter == "v0",
+  value = flextable::as_paragraph(flextable::as_i("v"), flextable::as_sub("0")))
+ft_bf = flextable::compose(ft_bf, j = "parameter", i = comp_df_f$parameter == "v1",
+  value = flextable::as_paragraph(flextable::as_i("v"), flextable::as_sub("1")))
+ft_bf = flextable::compose(ft_bf, j = "parameter", i = comp_df_f$parameter == "t0",
+  value = flextable::as_paragraph(flextable::as_i("t"), flextable::as_sub("0")))
+ft_bf = flextable::compose(ft_bf, j = "parameter", i = comp_df_f$parameter == "st0",
+  value = flextable::as_paragraph(flextable::as_i("s"), flextable::as_sub("t0")))
+
+new_col_names = c("Source", rep(c("M", "SD"), 2), "t", "p", "d", "CI", "BF10")
+ft_bf = flextable::set_header_labels(ft_bf, values = setNames(new_col_names, names(comp_df_f)))
+
+ft_bf = flextable::compose(ft_bf, part = "header", i = 1, j = 10, 
+                           value = flextable::as_paragraph("BF", flextable::as_sub("10")))
+ft_bf = flextable::compose(ft_bf, part = "header", i = 1, j = 9,
+                           value = flextable::as_paragraph("95% CI for ", flextable::as_i("d")))
+
+italic_indices = which(new_col_names %in% c("M", "SD", "t", "p", "d"))
+ft_bf = italic(ft_bf, italic = TRUE, i = 1, j = italic_indices, part = "header")
+
+ft_bf = flextable::add_header_row(ft_bf, values = c("", "Guessing Group", "Control Group", ""), colwidths = c(1, 2, 2, 5))
+
+ft_bf = ft_bf %>%
+  add_footer_lines(sprintf("Note. Comparisons between groups were conducted with df = %s in Study 1 and df = %s in Study 2.", t_dfs[1], t_dfs[2]))
+ft_bf = flextable::align(ft_bf, part = "header", i = 1:2, j = 2:10, align = "center")
+ft_bf = autofit(ft_bf)
+ft_bf
+```
+
+## Miscellaneous
+
+```{r ttests_zr, include=T, warning=F, message=F}
+
+res_list = list()
+i = 1
+
+for (study_nr in 1:2) {
+  for (cond in c("guess","control")) {
+    x = bf_estimates[bf_estimates$study_nr == study_nr & bf_estimates$cond == cond, "zr"]
+    t_res = t.test(x, mu = 0.5)
+    d_res = effectsize::cohens_d(x, mu = 0.5, ci = 0.95)
+    bf_res = BayesFactor::ttestBF(x = x, mu = 0.5)
+    bf_tab = BayesFactor::extractBF(bf_res)  
+    p_num <- unname(t_res$p.value)
+    p_str <- ifelse(p_num < .001, "< .001",
+                paste0("= ", substr(format(round(p_num, 3), nsmall = 3), 2, 6)))
+    res_list[[i]] = data.frame(
+      study_nr = study_nr, cond = cond,
+      t = format(round(unname(t_res$statistic), 2), nsmall = 2), 
+      df = format(unname(t_res$parameter), nsmall = 0),
+      p = p_str,
+      d = format(round(d_res$Cohens_d, 2), nsmall = 2),
+      d_ci_low = format(round(d_res$CI_low, 2), nsmall = 2),
+      d_ci_high = format(round(d_res$CI_high, 2), nsmall = 2),
+      BF10 = format(round(bf_tab$bf, 2), nsmall = 2) 
+    )
+    i = i + 1
+  }
+}
+results_df = do.call(rbind, res_list)
+
+results_df$report = with(results_df, sprintf("For zr in Study %s, %s group: t(%s) = %s, p %s, d = %s, 95%% CI [%s, %s], BF10 = %s", study_nr, cond, df, t, p, d, d_ci_low, d_ci_high, BF10))
+cat(paste0(results_df$report, collapse = "\n"))
+```
+
+```{r bias, include=T, warning=F, message=F}
+demo1$study_nr = 1
+demo2$study_nr = 2
+demo = rbind(demo1, demo2)
+bias = demo %>% count(study_nr, group, bias_select) %>% dplyr::group_by(study_nr, group) %>% mutate(prop = n / sum(n) * 100)
+bias$prop = round(bias$prop, 2)
+bias = bias[which(bias$bias_select=="high numbers"), c("study_nr", "group", "prop")]
+bias_wide = bias %>% tidyr::pivot_wider(names_from = group, values_from = prop)
+sprintf("In Study %s, most participants reported that the larger numbers stood out to them (control group: %.2f%%; guessing group: %.2f%%).", bias_wide$study_nr, bias_wide$control, bias_wide$guess)
+
+demo$bias_select_b = ifelse(demo$bias_select=="high numbers", 1, 0)
+#chisq.test(demo %>% filter(study_nr == 1) %>% with(table(group, bias_select_b)))
+#chisq.test(demo %>% filter(study_nr == 2) %>% with(table(group, bias_select_b)))
+
+hand = demo %>% count(study_nr, handedness) %>% dplyr::group_by(study_nr) %>% mutate(prop = n / sum(n) * 100)
+hand$prop = round(hand$prop, 2)
+hand = hand[which(hand$handedness=="right-handed"), c("study_nr", "prop")]
+sprintf("In Study %s, most participants were right handed, namely %.2f%%.", hand$study_nr, hand$prop)
+
+demo$handedness_b = ifelse(demo$handedness=="right-handed", 1, 0)
+#chisq.test(demo %>% filter(study_nr == 1) %>% with(table(group, handedness)))
+#chisq.test(demo %>% filter(study_nr == 2) %>% with(table(group, handedness)))
+```
+
+# Exploratory Analyses
+## Regression Analyses
+
+```{r, include=F}
+bf_estimates$condition = bf_estimates$cond
+demo1$condition = demo1$group
+demo2$condition = demo2$group
+bf_estimates1 = bf_estimates[which(bf_estimates$study_nr==1), ]
+bf_estimates2 = bf_estimates[which(bf_estimates$study_nr==2), ]
+bf_demo1 = merge(bf_estimates1, demo1)
+bf_demo2 = merge(bf_estimates2, demo2)
+names(bf_demo1)[names(bf_demo1) == "random_slider.response"] = "random"
+names(bf_demo1)[names(bf_demo1) == "educated_slider.response"] = "educated"
+names(bf_demo2)[names(bf_demo2) == "random_slider.response"] = "random"
+names(bf_demo2)[names(bf_demo2) == "educated_slider.response"] = "educated"
+```
+
+```{r regress, include=T}
+remove_outliers = function(d, vars, p_cutoff = 0.001) {
+  d_complete = d[complete.cases(d[, vars]), ]
+  x = as.matrix(d_complete[, vars])
+
+  md = mahalanobis(x, colMeans(x), cov(x))
+  cutoff = qchisq(1 - p_cutoff, df = length(vars))
+  keep = md < cutoff
+  removed = sum(!keep)
+  kept = sum(keep)
+
+  list(
+    data_filtered = d_complete[keep, ], data_outliers = d_complete[!keep, ],  
+    removed_n = removed, kept_n = kept, total_n = nrow(d_complete)
+  )
+}
+
+compare_models = function(data, outcome, group_name, predictors = c("alpha", "a", "t0"), p_cutoff = 0.001) {
+  d = subset(data, group == group_name)
+
+  f = reformulate(termlabels = predictors, response = outcome)
+
+  out_res = remove_outliers(d, predictors, p_cutoff = p_cutoff)
+  d_clean = out_res$data_filtered
+  d_out   = out_res$data_outliers 
+
+  m = lm(f, data = d_clean)
+
+  list(
+    group = group_name, outcome = outcome, predictors = predictors, model2 = m, summary2 = summary(m),
+    cleaned_data = d_clean, outliers = d_out, 
+    outlier_info = tibble(
+      group = group_name,
+      outcome = outcome,
+      removed = out_res$removed_n,
+      kept = out_res$kept_n,
+      total = out_res$total_n,
+      percent_removed = round(100 * out_res$removed_n / out_res$total_n, 2)
+    )
+  )
+}
+
+run_all = function(data, groups   = c("guess", "control"), outcomes = c("random", "educated"),
+                   predictors = c("alpha", "a", "t0"), p_cutoff = 0.001) {
+  
+  out = vector("list", length(groups) * length(outcomes))
+  k = 1
+  for (g in groups) {
+    for (y in outcomes) {
+      out[[k]] = compare_models(data, y, g, predictors = predictors, p_cutoff = p_cutoff)
+      k = k + 1
+    }
+  }
+  out
+}
+
+fit_standardized = function(model, data_clean, outcome, predictors) {
+  d_std = data_clean %>% dplyr::mutate(across(all_of(c(outcome, predictors)), ~ as.numeric(scale(.x))))
+
+  f_std = reformulate(predictors, outcome)
+  m_std = lm(f_std, data = d_std)
+
+  broom::tidy(m_std) %>%
+    filter(term != "(Intercept)") %>%
+    select(term, beta = estimate)
+}
+
+extract_coefs = function(results, study_nr) {
+  do.call(rbind, lapply(results, function(res) {
+    
+    unstd = broom::tidy(res$model2, conf.int = TRUE) %>%
+      filter(term != "(Intercept)")
+    
+    std = fit_standardized(model = res$model2, data_clean = res$cleaned_data, 
+                           outcome = res$outcome, predictors = res$predictors)
+    
+    merged = unstd %>% dplyr::left_join(std, by = "term") %>%
+      dplyr::mutate(study_nr = study_nr, group = res$group, outcome  = res$outcome,
+        model = "model2", df = df.residual(res$model2)) %>% relocate(study_nr, group, outcome, model, df)
+    merged
+  }))
+}
+
+extract_outlier_info = function(results, study_nr) {
+  do.call(rbind, lapply(results, function(res) {
+    cbind(study_nr = study_nr, res$outlier_info)
+  }))
+}
+
+extract_outlier_rows = function(results, study_nr) {
+  do.call(rbind, lapply(results, function(res) {
+    if (nrow(res$outliers) > 0) {
+      cbind(study_nr = study_nr, group = res$group, outcome  = res$outcome, res$outliers)
+    }
+  }))
+}
+
+results_1 = run_all(bf_demo1, p_cutoff = .001)
+results_2 = run_all(bf_demo2, p_cutoff = .001)
+
+results_1r = run_all(bf_demo1, p_cutoff = 0)
+results_2r = run_all(bf_demo2, p_cutoff = 0)
+
+coef_table_all = rbind(
+  extract_coefs(results_1, study_nr = 1),
+  extract_coefs(results_2, study_nr = 2)
+) %>%
+  dplyr::mutate(
+    statistic = format(round(as.numeric(statistic), 2), nsmall = 2),
+    estimate = format(round(as.numeric(estimate), 2), nsmall = 2),
+    std.error = format(round(as.numeric(std.error), 2), nsmall = 2),
+    conf.high = format(round(as.numeric(conf.high), 2), nsmall = 2),
+    conf.low = format(round(as.numeric(conf.low), 2), nsmall = 2),
+        beta = {
+      x = format(round(as.numeric(beta), 2), nsmall = 2)
+      sub("^(-?)0\\.", "\\1.", x)
+    },
+    p.value = dplyr::case_when(
+      as.numeric(p.value) < 0.001 ~ "< .001",
+      TRUE ~ as.character(gsub("^0", "", format(round(as.numeric(p.value), 3), nsmall = 3)))
+    ))
+
+coef_table_allr = rbind(extract_coefs(results_1r, study_nr = 1), extract_coefs(results_2r, study_nr = 2)) %>%
+  dplyr::mutate(
+    statistic = format(round(as.numeric(statistic), 2), nsmall = 2),
+    estimate = format(round(as.numeric(estimate), 2), nsmall = 2),
+    std.error = format(round(as.numeric(std.error), 2), nsmall = 2),
+    conf.high = format(round(as.numeric(conf.high), 2), nsmall = 2),
+    conf.low = format(round(as.numeric(conf.low), 2), nsmall = 2),
+        beta = {
+      x = format(round(as.numeric(beta), 2), nsmall = 2)
+      sub("^(-?)0\\.", "\\1.", x)
+    },
+    p.value = dplyr::case_when(as.numeric(p.value) < 0.001 ~ "< .001",
+                               TRUE ~ as.character(gsub("^0", "", format(round(as.numeric(p.value), 3), nsmall = 3))))
+    )
+
+coef_table_all$CI_B = paste0("[", coef_table_all$conf.low, ", " , coef_table_all$conf.high, "]")
+my_dfs = unique(coef_table_all$df)
+coef_table_all = coef_table_all %>% dplyr::select(study_nr, group, outcome, term, estimate, CI_B, std.error, beta, statistic, p.value)
+
+coef_table_allr$CI_B = paste0("[", coef_table_allr$conf.low, ", " , coef_table_allr$conf.high, "]")
+my_dfsr = unique(coef_table_allr$df)
+coef_table_allr = coef_table_allr %>% dplyr::select(study_nr, group, outcome, term, estimate, CI_B, std.error, beta, statistic, p.value)
+
+coef_table_all_random   = coef_table_all[coef_table_all$outcome == "random", ]
+coef_table_all_educated = coef_table_all[coef_table_all$outcome == "educated", ]
+
+outlier_summary = rbind(
+  extract_outlier_info(results_1, study_nr = 1),
+  extract_outlier_info(results_2, study_nr = 2)
+)
+outlier_rows_all = rbind(
+  extract_outlier_rows(results_1, study_nr = 1),
+  extract_outlier_rows(results_2, study_nr = 2)
+)
+#outlier_summary
+#outlier_rows_all
+
+names(coef_table_all_random) = paste0(names(coef_table_all_random), "2")
+coef_table_all_f = cbind(coef_table_all_educated[, c("term", "estimate", "CI_B", "std.error", "beta", "statistic", "p.value")], coef_table_all_random[, c("estimate2", "CI_B2", "std.error2", "beta2", "statistic2", "p.value2")])
+
+coef_table_all_f = coef_table_all_f %>%
+  dplyr::mutate(dplyr::across(where(is.character), ~ gsub("-", "−", .x)))
+
+coef_table_all_f = rbind(
+  c("Study 1", rep("", ncol(coef_table_all_f) - 1)),
+  c("Guessing Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[1:3, ],
+  c("Control Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[4:6, ],
+  c("Study 2", rep("", ncol(coef_table_all_f) - 1)),
+  c("Guessing Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[7:9, ],
+  c("Control Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[10:12, ])
+
+ft_bf = flextable::flextable(coef_table_all_f)
+
+ft_bf = flextable::compose(  ft_bf, j = "term", i = coef_table_all_f$term == "alpha", value = flextable::as_paragraph("\u03B1"))
+ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "a", 
+                           value = flextable::as_paragraph(flextable::as_i("a")))
+ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "t0",
+                           value = flextable::as_paragraph(flextable::as_i("t"), flextable::as_sub("0")))
+
+new_col_names = c("Source", rep(c("B", "CI", "SE B", "beta", "t", "p"), 2))
+ft_bf = flextable::set_header_labels(ft_bf, values = setNames(new_col_names, names(coef_table_all_f)))
+
+ci_indices = which(new_col_names %in% "CI")
+ft_bf = flextable::compose(ft_bf, part = "header", i = 1, j = ci_indices, value = flextable::as_paragraph("95% CI for ", flextable::as_i("B")))
+
+beta_indices = which(new_col_names %in% "beta")
+ft_bf = flextable::compose(ft_bf, part = "header", j = beta_indices, i = 1, value = flextable::as_paragraph(flextable::as_i("\u03B2")))
+
+italic_indices = which(new_col_names %in% c("SE B", "B", "t", "p"))
+ft_bf = italic(ft_bf, italic = TRUE, i = 1, j = italic_indices, part = "header")
+
+ft_bf = flextable::add_header_row(ft_bf, values = c("", "Self-Reported Educated Guessing", "Self-Reported Random Guessing"),
+                                  colwidths = c(1, 6, 6))
+ft_bf = flextable::add_header_row(ft_bf, values = c("", "Dependent Variable"), colwidths = c(1, 12))
+
+ft_bf = flextable::align(ft_bf, part = "header", i = 1:3, j = 2:13, align = "center")
+
+ft_bf = ft_bf %>% add_footer_lines(sprintf(
+  "Note. Each regression analysis was conducted with df = (3, %s) in Study 1 and df = (3, %s) in Study 2.",
+  my_dfs[1], my_dfs[2]))
+
+ft_bf = autofit(ft_bf)
+ft_bf %>% flextable::set_caption("Excluding Outliers")
+
+#Including Outliers
+coef_table_all_randomr = coef_table_allr[coef_table_allr$outcome == "random", ]
+coef_table_all_educatedr = coef_table_allr[coef_table_allr$outcome == "educated", ]
+names(coef_table_all_randomr) = paste0(names(coef_table_all_randomr), "2")
+coef_table_all_f = cbind(coef_table_all_educatedr[, c("term", "estimate", "CI_B", "std.error", "beta", "statistic", "p.value")], coef_table_all_randomr[, c("estimate2", "CI_B2", "std.error2", "beta2", "statistic2", "p.value2")])
+
+coef_table_all_f = coef_table_all_f %>% dplyr::mutate(dplyr::across(where(is.character), ~ gsub("-", "−", .x)))
+
+coef_table_all_f = rbind(
+  c("Study 1", rep("", ncol(coef_table_all_f) - 1)),
+  c("Guessing Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[1:3, ],
+  c("Control Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[4:6, ],
+  c("Study 2", rep("", ncol(coef_table_all_f) - 1)),
+  c("Guessing Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[7:9, ],
+  c("Control Group", rep("", ncol(coef_table_all_f) - 1)),
+  coef_table_all_f[10:12, ])
+
+ft_bf = flextable::flextable(coef_table_all_f)
+ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "alpha",
+                           value = flextable::as_paragraph("\u03B1"))
+ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "a", 
+                           value = flextable::as_paragraph(flextable::as_i("a")))
+ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "t0",
+                           value = flextable::as_paragraph(flextable::as_i("t"), flextable::as_sub("0")))
+
+new_col_names = c("Source", rep(c("B", "CI", "SE B", "beta", "t", "p"), 2))
+ft_bf = flextable::set_header_labels(ft_bf, values = setNames(new_col_names, names(coef_table_all_f)))
+
+ci_indices = which(new_col_names %in% "CI")
+ft_bf = flextable::compose(ft_bf, part = "header", i = 1, j = ci_indices, 
+                           value = flextable::as_paragraph("95% CI for ", flextable::as_i("B")))
+
+beta_indices = which(new_col_names %in% "beta")
+ft_bf = flextable::compose(ft_bf, part = "header", j = beta_indices, i = 1,
+                           value = flextable::as_paragraph(flextable::as_i("\u03B2")))
+
+italic_indices = which(new_col_names %in% c("SE B", "B", "t", "p"))
+ft_bf = italic(ft_bf, italic = TRUE, i = 1, j = italic_indices, part = "header")
+
+ft_bf = flextable::add_header_row(ft_bf, 
+                                  values = c("", "Self-Reported Educated Guessing", "Self-Reported Random Guessing"),
+                                  colwidths = c(1, 6, 6))
+ft_bf = flextable::add_header_row(ft_bf, values = c("", "Dependent Variable"), colwidths = c(1, 12))
+
+ft_bf = flextable::align(ft_bf, part = "header", i = 1:3, j = 2:13, align = "center")
+
+ft_bf = ft_bf %>% add_footer_lines(sprintf(
+  "Note. Each regression analysis was conducted with df = (3, %s) in Study 1 and df = (3, %s) in Study 2.",
+  my_dfsr[1], my_dfsr[2]))
+
+ft_bf = autofit(ft_bf)
+ft_bf %>% flextable::set_caption("Including Outliers")
+```
+
+## Bivariate Correlations
+
+```{r bivariate_rs, include=T}
+remove_outliers = function(d, vars, p_cutoff = 0.001) {
+  d = d[complete.cases(d[vars]), ]
+  if (nrow(d) < length(vars)) return(d)
+  x = as.matrix(d[vars])
+  md = mahalanobis(x, colMeans(x), cov(x))
+  cutoff = qchisq(1 - p_cutoff, df = length(vars))
+  d[md < cutoff, , drop = FALSE]
+}
+
+sig_stars = function(p) {
+  if (is.na(p) || p >= 0.05) ""
+  else if (p < 0.001) "***"
+  else if (p < 0.01)  "**"
+  else                "*"
+}
+
+get_corr_matrix = function(data, group_name, outcomes = c("educated", "random"), predictors = c("alpha", "a", "t0"),
+                            p_cutoff = 0.001, method = "pearson") {
+
+  d = subset(data, group == group_name)
+  vars_all = c(predictors, outcomes)
+  n = length(vars_all)
+
+  mat = matrix("1.00", nrow = n, ncol = n, dimnames = list(vars_all, vars_all))
+
+  for (i in seq_len(n - 1)) {
+    for (j in (i + 1):n) {
+      v1 = vars_all[i]
+      v2 = vars_all[j]
+
+      d_clean = remove_outliers(d, vars = c(v1, v2), p_cutoff = p_cutoff)
+      n_used  = nrow(d_clean)
+
+      if (n_used > 3) {
+        ct = suppressWarnings(cor.test(d_clean[[v1]], d_clean[[v2]], method = method))
+        r = formatC(ct$estimate, format = "f", digits = 2)
+        stars = sig_stars(ct$p.value)
+        cell = paste0(r, stars, "\n(", n_used, ")")
+      } else {
+        cell = NA_character_
+      }
+
+      mat[i, j] = mat[j, i] = cell
+    }
+  }
+  as.data.frame(mat, stringsAsFactors = FALSE)
+}
+
+combine_groups_matrix = function(control_mat, guess_mat) {
+  stopifnot(identical(dimnames(control_mat), dimnames(guess_mat)))
+  vars = rownames(control_mat)
+
+  combined = matrix(NA_character_, nrow = length(vars), ncol = length(vars), dimnames = list(vars, vars))
+
+  for (i in seq_along(vars)) {
+    for (j in seq_along(vars)) {
+      combined[i, j] =
+        if (i == j) {
+          "1.00"
+        } else if (i < j) {
+          as.character(guess_mat[i, j])   #upper triangle = guess
+        } else {
+          as.character(control_mat[i, j]) #lower triangle = control
+        }
+    }
+  }
+
+  as.data.frame(combined, stringsAsFactors = FALSE)
+}
+
+format_corr_for_flextable = function(mat, labels) {
+  x = as.matrix(mat)
+  x[is.na(x)]    = ""
+  x[x == "1.00"] = ""
+  x = gsub("(-?)0\\.", "\\1.", x)
+  x = sub("^-", "−", x)
+  data.frame(Variable = labels, x, check.names = FALSE, row.names = NULL)
+}
+
+make_corr_flextable = function(control_mat, guess_mat, labels, caption) {
+  new_col_names = c("Variable", paste0(1:length(labels)))
+  note_text = c("Note. The results for the guessing group are shown above the diagonal, while the results for the control group are shown below the diagonal. Values in parentheses indicate the number of participants included in each bivariate correlation after outlier exclusion based on Mahalanobis distance at the 0.1% significance level.")
+
+  mat = combine_groups_matrix(control_mat, guess_mat)
+  ft_data = format_corr_for_flextable(mat, labels)
+
+  flextable(ft_data) |>
+    flextable::set_header_labels(
+      values = setNames(new_col_names, names(ft_data))
+    ) |>
+    flextable::align(part = "header", i = 1, j = 2:ncol(ft_data), align = "center") |>
+    flextable::add_footer_lines(note_text) |>
+    flextable::set_caption(caption)
+}
+
+my_names = c(
+  "1. Stability parameter (α)",
+  "2. Threshold separation (a)",
+  "3. Nondecision time (t0)",
+  "4. Educated Guessing Rating",
+  "5. Random Guessing Rating"
+)
+
+cor_matrix_1_control = get_corr_matrix(bf_demo1, "control")
+cor_matrix_1_guess = get_corr_matrix(bf_demo1, "guess")
+cor_matrix_2_control = get_corr_matrix(bf_demo2, "control")
+cor_matrix_2_guess = get_corr_matrix(bf_demo2, "guess")
+
+ft_study1 = make_corr_flextable(cor_matrix_1_control, cor_matrix_1_guess,
+                                 labels = my_names, caption = "Study 1")
+ft_study2 = make_corr_flextable(cor_matrix_2_control, cor_matrix_2_guess,
+                                 labels = my_names, caption = "Study 2")
+
+format_labels = function(ft) {
+  ft |>
+    flextable::compose(j = 1, i = 2, 
+                       value = flextable::as_paragraph("2. Threshold separation (", flextable::as_i("a"), ")")
+                       ) |>
+    flextable::compose(j = 1, i = 3,
+                       value = flextable::as_paragraph("3. Nondecision time (", flextable::as_i("t"), flextable::as_sub("0"), ")"
+                                                       )
+                       )
+}
+
+ft_study1 |> format_labels() |> autofit()
+ft_study2 |> format_labels() |> autofit()
+```
+
+## Variance Inflation Factors 
+
+```{r vifs, include=T}
+check_multicollinearity = function(data, study_nr, group = "guess", outcome = "random", vars = c("alpha", "a", "t0")) {
+
+  subset = data[data$group == group, ]
+
+  f = as.formula(paste(outcome, "~", paste(vars, collapse = " + ")))
+  model = lm(f, data = subset)
+  vifs = round(car::vif(model), 2)
+
+  dplyr::tibble(study_nr = study_nr, group = group,
+                vif_alpha = vifs["alpha"], vif_a = vifs["a"], vif_t0 = vifs["t0"])
+}
+
+vif_table_study1 = expand.grid(group = c("guess", "control"),  outcome = c("random"), stringsAsFactors = FALSE) %>%
+  pmap_dfr(function(group, outcome) {
+    check_multicollinearity(data = bf_demo1, study_nr = 1, group = group)
+    })
+
+vif_table_study2 = expand.grid(group = c("guess", "control"),outcome = c("random"), stringsAsFactors = FALSE) %>%
+  pmap_dfr(function(group, outcome) {
+    check_multicollinearity(data = bf_demo2, study_nr = 2, group = group)
+  })
+
+vif_table = bind_rows(vif_table_study1, vif_table_study2)
+#vif_table
+
+vif_range1 = vif_table_study1 %>% dplyr::select(starts_with("vif")) %>%
+  dplyr::summarise(min_vif = min(unlist(.), na.rm = TRUE), max_vif = max(unlist(.), na.rm = TRUE))
+vif_range2 = vif_table_study2 %>% dplyr::select(starts_with("vif")) %>%
+  dplyr::summarise(min_vif = min(unlist(.), na.rm = TRUE), max_vif = max(unlist(.), na.rm = TRUE))
+
+cat(sprintf("VIF range in Study 1: %.2f – %.2f", vif_range1$min_vif, vif_range1$max_vif), sprintf("VIF range in Study 2: %.2f – %.2f", vif_range2$min_vif, vif_range2$max_vif), sep="\n")
+```
