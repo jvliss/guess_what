@@ -17,11 +17,11 @@ This project examines whether the stability parameter (α) in the Lévy-flight m
 
 ```
 ├── 1_experiment_scripts/    # PsychoPy/PsychoJS experiments and SoSci Survey files
-│   ├── psychopy/           # Study 1 & 2 experiment definitions (.psyexp, .js)
+│   ├── psychopy/           # Study 1 & 2 experiment definitions (.psyexp, .js), including stimulus generation code (.R)
 │   └── sosci/              # Questionnaire exports and codebooks (.xml, .pdf)
 │
 ├── 2_simulators/           # BayesFlow model comparison and parameter estimation
-│   ├── *.ipynb             # Main analysis notebooks
+│   ├── *.ipynb             # Jupyter notebooks
 │   ├── checkpoint_*/       # Trained neural network checkpoints
 │   └── mvct/               # Data, estimates, figures, and validation files
 │
@@ -37,7 +37,7 @@ This project examines whether the stability parameter (α) in the Lévy-flight m
 ### Behavioral Data
 Located in `2_simulators/mvct/behav_demo_data/`:
 - Raw data in `raw/` including `mvct_raw_data_variables_explained.xlsx` (variable codebook)
-- Preprocessed data in `prepared1/` and `prepared2/`
+- Preprocessed data in `prepared1/` and `prepared2/`, with `critfast1` indicating that RTs below a fixed cutoff for fast guesses were excluded (e.g., 510 ms), and `critfast0` indicating no such exclusion. The latter is used for robustness checks.
 
 ### Key Outputs
 
@@ -58,8 +58,8 @@ Located in `2_simulators/mvct/behav_demo_data/`:
 
 ### Running the Analysis
 
-1. **Model Comparison**: Open `2_simulators/mod_comp_mvct.ipynb`
-2. **Parameter Estimation**: Open `2_simulators/param_estim_mvct.ipynb`
+1. **Model Comparison**: Open `2_simulators/mod_comp_2m.ipynb` for main analyses, `2_simulators/mod_comp_4m.ipynb` for additional analyses
+2. **Parameter Estimation**: Open `2_simulators/param_estim_lfm.ipynb` for main analyses, `2_simulators/param_estim_dm.ipynb` for additional analyses
 3. **Statistical Analysis**: View `3_R/gw_analyses.html` or run the `.Rmd` file in R
 
 ---
