@@ -1,6 +1,6 @@
 ---
 title: "Guess What!"
-date: "May 2026"
+date: "June 2026"
 output: 
   html_document:
     code_folding: hide
@@ -20,10 +20,10 @@ library(flextable)
 library(purrr)
 library(rempsyc)
 library(tidyr)
-library(here)
 
 #Set paths 
-root_path = paste0(here::here("2_simulators/mvct/"), "/")
+mardown_path = rstudioapi::getActiveDocumentContext()$path
+root_path = paste0(sub("(.*guess_what).*", "\\1", mardown_path), "/2_simulators/mvct/")
 path_to_behav = paste0(root_path, "behav_demo_data/")
 
 #Set data preparation scenario
