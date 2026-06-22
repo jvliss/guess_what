@@ -25,9 +25,9 @@ This project examines whether the stability parameter (α) in the Lévy-flight m
 │   ├── checkpoint_*/       # Trained neural network checkpoints
 │   └── mvct/               # Data, estimates, figures, and validation files
 │
-└── 3_R/                    # Statistical analyses (frequentist & Bayesian)
-    ├── gw_analyses.Rmd
-    └── gw_analyses.html
+└── 3_R/                    # Statistical analyses
+    ├── gww_analyses.*      # R Markdown and HTML files for the main and additional analyses
+    └── appendix_c.*        # R Markdown and HTML files for Appendix C analyses
 ```
 
 ---
@@ -60,7 +60,7 @@ Located in `2_simulators/mvct/behav_demo_data/`:
 
 1. **Model Comparison**: Open `2_simulators/mod_comp_2m.ipynb` for main analyses, `2_simulators/mod_comp_4m.ipynb` for additional analyses
 2. **Parameter Estimation**: Open `2_simulators/param_estim_lfm.ipynb` for main analyses, `2_simulators/param_estim_dm.ipynb` for additional analyses
-3. **Statistical Analysis**: View `3_R/gw_analyses.html` or run the `.Rmd` file in R
+3. **Statistical Analysis**: View `3_R/gw_analyses.html` or run the corresponding `.Rmd` file in R. For Appendix C analyses, view `3_R/appendix_c.html` or run the corresponding `.Rmd` file in R.
 
 ---
 
