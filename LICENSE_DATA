@@ -1,0 +1,32 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Julia V. Liss, Katharina Mminele, Max Brede, and
+Veronika Lerche
+
+This license applies to the non-software content of this repository, namely:
+
+  - behavioral data files (2_simulators/mvct/behav_demo_data/, including
+    raw/, prepared1/, and prepared2/)
+  - codebooks (mvct_raw_data_variables_explained.xlsx) and questionnaire
+    materials (1_experiment_scripts/sosci/)
+  - model estimates and posterior predictive simulations
+    (2_simulators/mvct/estimates_*/, 2_simulators/mvct/simulates_*/)
+  - trained network checkpoints (2_simulators/checkpoint_mvct_*/)
+  - validation files (2_simulators/mvct/validation/)
+  - figures and generated images (2_simulators/mvct/figures/)
+  - rendered analysis reports (3_R/*.html)
+
+Software in this repository is licensed separately under the MIT License;
+see LICENSE. The one exception, 2_simulators/levy_noise.pyx, is licensed
+under the GNU General Public License, version 3 or later; see
+2_simulators/LICENSE_GPL.
+
+Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+Summary: https://creativecommons.org/licenses/by/4.0/
+
+Suggested attribution:
+
+  Liss, J. V., Mminele, K., Brede, M., & Lerche, V. (2026). Guess what!
+  Assessing the psychological meaning of the stability parameter in the
+  Lévy-flight model [Manuscript submitted for publication]. School of Social
+  Sciences, University of Mannheim.

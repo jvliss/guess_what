@@ -1,6 +1,7 @@
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![BayesFlow](https://img.shields.io/badge/BayesFlow-1.1.4-blue)](https://bayesflow.org/)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-green.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ---
 
@@ -16,7 +17,7 @@ This project examines whether the stability parameter (α) in the Lévy-flight m
 ## Repository Structure
 
 ```
-├── 1_experiment_scripts/    # PsychoPy/PsychoJS experiments and SoSci Survey files
+├── 1_experiment_scripts/   # PsychoPy/PsychoJS experiments and SoSci Survey files
 │   ├── psychopy/           # Study 1 & 2 experiment definitions (.psyexp, .js), including stimulus generation code (.R)
 │   └── sosci/              # Questionnaire exports and codebooks (.xml, .pdf)
 │
@@ -64,6 +65,16 @@ Located in `2_simulators/mvct/behav_demo_data/`:
 
 ---
 
+## Licenses
+
+All code in this repository—including the analysis scripts, simulators, and experiment scripts—is released under the [MIT License](https://opensource.org/licenses/MIT) (see `LICENSE`).
+
+Data, codebooks, model estimates, network checkpoints, and figures are released under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) (see `LICENSE_DATA`).
+
+Third-party dependencies and frameworks (e.g., BayesFlow, PsychoPy) remain subject to their own licenses.
+
+---
+
 ## Citation
 
 If you use (parts of) this repository, please consider citing the associated manuscript (once published) and/or relevant papers, e.g.,
@@ -77,5 +88,3 @@ If you use (parts of) this repository, please consider citing the associated man
 ## Support
 
 This research was supported by the Baden-Württemberg Stiftung through the “Eliteprogramm für Postdoktorandinnen und Postdoktoranden” (Elite Program for Postdoctoral Researchers) as well as by a grant from the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) to Veronika Lerche (Grant Nr. LE 4379/4-1).
-
----
