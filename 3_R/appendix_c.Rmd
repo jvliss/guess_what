@@ -1,6 +1,6 @@
 ---
 title: "Screening for Fast Chance-Level Responses"
-date: "June 2026"
+date: "November 2026"
 output: 
   html_document:
     code_folding: hide
@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 	message = FALSE,
 	warning = FALSE
 )
+
 library(tidyverse)
 library(dplyr)
 library(diptest)
@@ -35,8 +36,8 @@ windowsFonts(mono  = "DejaVu Sans", sans = "DejaVu Sans")
 mardown_path = rstudioapi::getActiveDocumentContext()$path
 root_path = sub("(.*guess_what).*", "\\1", mardown_path)
 
-my_cutoff_ms = 300
 my_caf_binwidth = 50
+my_caf_binwidth_sensitivity = 25
 
 my_fig_font = "DejaVu Sans"
 base_font_size = 9
@@ -44,7 +45,6 @@ title_font_size = 11
 
 col_g = "#ff9752"
 col_c = "#0072B2"
-
 ```
 
 ```{r helpers}
@@ -221,51 +221,75 @@ caf_results = calc_caf(df_all_studies, binwidth = my_caf_binwidth, min_n = 20)
 ```
 
 ```{r caf_plot}
-plot_caf = function(caf_df, base_font_size = 9, title_font_size = 11) {
-  cutoff = unique(caf_df$procedural_cutoff_ms)
-  caf_df = caf_df %>%
-    dplyr::mutate(condition = factor(condition, levels = c("guess", "control"), labels = c("Guessing", "Control")))
-  
-  ggplot2::ggplot(caf_df,
-                  ggplot2::aes(x = mean_rt, y = acc, 
-                               color = condition, fill = condition, linetype = condition, shape = condition)) +
+plot_caf = function(caf_df,
+                    condition_levels = c("guess", "control"),
+                    condition_labels = c("Guessing", "Control"),
+                    condition_cols   = c(col_g, col_c),
+                    my_linewidth = 0.6,
+                    xlim_up = 1150,
+                    base_font_size = 9,
+                    title_font_size = 11) {
+
+  cutoff_df = caf_df %>%
+    dplyr::distinct(procedural_cutoff_ms)
+
+  caf_df %>%
+    dplyr::mutate(
+      condition = factor(condition, 
+                         levels = condition_levels, 
+                         labels = condition_labels, 
+                         ordered = TRUE)) %>%
+    ggplot2::ggplot(
+      ggplot2::aes(x = mean_rt, y = acc, 
+                   color = condition, fill = condition,
+                   linetype = condition, shape = condition)) +
     ggplot2::geom_ribbon(ggplot2::aes(ymin = ci_low, ymax = ci_high), alpha = 0.15, color = NA) +
-    ggplot2::geom_point(size = 1.75) +
-    ggplot2::geom_line(linewidth = 0.8) +
-    ggplot2::geom_hline(yintercept = 0.5, 
-                        linetype = "longdash", color = "black", linewidth = 0.4) +
-    ggplot2::geom_vline(xintercept = cutoff,
-                        linetype = "dotted", color = "black", linewidth = 0.4) +
-    ggplot2::coord_cartesian(xlim = c(0, 1150), ylim = c(0, 1)) +
-    ggplot2::scale_x_continuous(expand = c(0, 0)) +
-    ggplot2::scale_y_continuous(labels = no_leading_zero, expand = c(0, 0)) +
-    ggplot2::scale_color_manual(values = c("Guessing" = col_g, "Control" = col_c)) +
-    ggplot2::scale_fill_manual(values = c("Guessing" = col_g, "Control" = col_c)) +
-    ggplot2::scale_linetype_manual(values = c("Guessing" = "solid", "Control" = "solid")) +
-    ggplot2::scale_shape_manual(values = c("Guessing" = 16, "Control" = 16)) +
+    ggplot2::geom_point(size = 1.5) +
+    ggplot2::geom_line(linewidth = my_linewidth, alpha = 1) +
+    ggplot2::geom_hline(yintercept = 0.5, linetype = "longdash", color = "black", linewidth = 0.4) +
+    ggplot2::geom_vline(data = cutoff_df, 
+                        ggplot2::aes(xintercept = procedural_cutoff_ms), 
+                        inherit.aes = FALSE, linetype = "dotted", color = "black", linewidth = 0.4) +
+    ggplot2::coord_cartesian(xlim = c(0, xlim_up), ylim = c(0, 1)) +
+    ggplot2::scale_y_continuous(labels = no_leading_zero) +
+    ggplot2::scale_color_manual(values = stats::setNames(condition_cols, condition_labels),
+                                breaks = condition_labels) +
+    ggplot2::scale_fill_manual(
+      values = stats::setNames(condition_cols, condition_labels),
+      breaks = condition_labels
+    ) +
+    ggplot2::scale_linetype_manual(
+      values = stats::setNames(rep("solid", length(condition_labels)), condition_labels),
+      breaks = condition_labels
+    ) +
+    ggplot2::scale_shape_manual(
+      values = stats::setNames(rep(16, length(condition_labels)), condition_labels),
+      breaks = condition_labels
+    ) +
     ggplot2::labs(
       title = unique(caf_df$study_label),
-      x = "Response Time Bin (ms)",
-      y = "Proportion Correct",
+      x = "Response Time Bin (ms)", y = "Proportion Correct",
       color = "Group", fill = "Group", linetype = "Group", shape = "Group") +
-    ggplot2::guides(color = ggplot2::guide_legend(title.position = "top", title.hjust = 0.5, nrow = 1,byrow = TRUE,
-                                                  override.aes = list(alpha = 1, linewidth = 0.9, size = 2)),
-                    fill = "none", linetype = "none", shape = "none") +
+    ggplot2::guides(color = ggplot2::guide_legend(
+      title.position = "top", title.hjust = 0.5, nrow = 1, byrow = TRUE,
+      override.aes = list(alpha = 1, linewidth = my_linewidth, size = 1.5)),
+      fill = "none", linetype = "none", shape = "none") +
     ggplot2::theme_minimal(base_family = my_fig_font, base_size = base_font_size) +
-    ggplot2::theme(text = ggplot2::element_text(family = my_fig_font, size = base_font_size),
-                   plot.title = ggplot2::element_text(family = my_fig_font, hjust = 0.5, size = title_font_size),
-                   axis.title = ggplot2::element_text(family = my_fig_font, size = base_font_size),
-                   axis.text = ggplot2::element_text(family = my_fig_font, size = base_font_size, color = "black"),
-                   panel.grid.minor.y = ggplot2::element_blank(),
-                   panel.grid.minor.x = ggplot2::element_blank(),
-                   panel.grid.major.x = ggplot2::element_blank(),
-                   panel.grid.major.y = ggplot2::element_line(color = "lightgrey", linewidth = 0.2),
-                   axis.line = ggplot2::element_line(color = "black", linewidth = 0.3),
-                   axis.ticks = ggplot2::element_line(color = "black", linewidth = 0.3)
+    ggplot2::theme(
+      text = ggplot2::element_text(family = my_fig_font, size = base_font_size),
+      plot.title = ggplot2::element_text(family = my_fig_font, hjust = 0.5, size = title_font_size),
+      axis.title = ggplot2::element_text(family = my_fig_font, size = base_font_size),
+      axis.text = ggplot2::element_text(family = my_fig_font, size = base_font_size, color = "black"),
+      panel.grid.major.y = ggplot2::element_blank(),
+      panel.grid.minor.y = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_blank(),
+      panel.grid.minor.x = ggplot2::element_blank(),
+      axis.line = ggplot2::element_line(color = "black", linewidth = 0.4),
+      axis.ticks = ggplot2::element_line(color = "black", linewidth = 0.4)
     )
 }
 
-p_caf_1 = caf_results  %>%
+p_caf_1 = caf_results %>%
   dplyr::filter(study_label == "Study 1") %>%
   plot_caf()
 
@@ -274,33 +298,33 @@ p_caf_2 = caf_results %>%
   plot_caf()
 
 fig_c1 = patchwork::guide_area() / (p_caf_1 + p_caf_2) +
-  patchwork::plot_layout(heights = c(0.1, 1), guides = "collect") &
-  ggplot2::theme(text = ggplot2::element_text(family = my_fig_font, size = base_font_size),
-                 legend.position = "top", legend.justification = "center", legend.direction = "horizontal",
-                 legend.title = ggplot2::element_text(family = my_fig_font, size = base_font_size, margin = ggplot2::margin(b = -3)),
-                 legend.text = ggplot2::element_text(family = my_fig_font, size = base_font_size),
-                 plot.margin = ggplot2::margin(t = 10, r = 5, b = 5, l = 5),
-                 legend.spacing.y = grid::unit(0, "pt"),
-                 legend.key.height = grid::unit(25, "pt"),
-                 legend.background = ggplot2::element_rect(fill = "white", color = "lightgrey", linewidth = 0.4),
-                 legend.box.background = ggplot2::element_blank(),
-                 legend.margin = ggplot2::margin(3, #top
-                                                 4, #right
-                                                 -4, #bottom
-                                                 3) #left
+  patchwork::plot_layout(heights = c(0.15, 1), guides = "collect") &
+  ggplot2::theme(
+    text = ggplot2::element_text(family = my_fig_font, size = 9),
+    legend.position = "top",
+    legend.justification = "center",
+    legend.direction = "horizontal",
+    legend.title = ggplot2::element_text(family = my_fig_font, size = 9,
+                                         margin = ggplot2::margin(b = -3)),
+    legend.text  = ggplot2::element_text(family = my_fig_font, size = 9),
+    legend.spacing.y = grid::unit(0, "pt"),
+    legend.key.height = grid::unit(25, "pt"),
+    legend.background = ggplot2::element_rect(fill = "white", color = "lightgrey", linewidth = 0.4),
+    legend.box.background = ggplot2::element_blank(),
+    legend.margin = ggplot2::margin(3, 4, -4, 3),
+    plot.margin = ggplot2::margin(t = 5, r = 5, b = 2.5, l = 5)
   )
 
-fig_c1 = fig_c1 & theme(plot.margin = margin(t = 5, r = 5, b = 2.5, l = 5))
 fig_c1
 
-ggplot2::ggsave(plot = fig_c1, filename = "figC1_screening.png", 
-                device = ragg::agg_png, path = paste0(root_path, "/2_simulators/mvct/figures/"), 
+ggplot2::ggsave(plot = fig_c1, filename = "figC1_screening.png",
+                device = ragg::agg_png, path = paste0(root_path, "/2_simulators/mvct/figures/"),
                 width = 16, height = 9, units = "cm", dpi = 300)
 ```
 
 # Descriptive empirical boundary 
 
-The earliest bin whose exact binomial 95% CI lies entirely above .50, per study and condition.
+The earliest bin whose exact binomial 95% CI lies entirely above .50, per study and group. The boundary is the mean RT of that bin.
 
 ```{r caf_threshold}
 calc_caf_threshold(caf_results) %>%
@@ -318,27 +342,21 @@ empirical_thresholds = calc_caf_threshold(caf_results) %>%
 # Fast-response prevalence
 
 ```{r prevalence}
-df_all_studies %>%
-  dplyr::group_by(study_label, condition) %>%
-  dplyr::summarise(
-    n_total = dplyr::n(),
-    n_below_300 = sum(rt_ms < my_cutoff_ms),
-    pct_below_300 = round(mean(rt_ms < my_cutoff_ms) * 100, 2),
-    acc_below_300 = round(mean(correct[rt_ms < my_cutoff_ms], na.rm = TRUE), 3),
-    .groups = "drop"
-  )
-
-df_all_studies %>%
+prevalence = df_all_studies %>%
   dplyr::left_join(empirical_thresholds, by = c("study_label", "condition")) %>%
   dplyr::group_by(study_label, condition) %>%
   dplyr::summarise(
     n_total = dplyr::n(),
+    n_below_procedural = sum(rt_ms < unique(procedural_cutoff_ms)),
     pct_below_procedural = round(mean(rt_ms < unique(procedural_cutoff_ms)) * 100, 2),
     acc_below_procedural = round(mean(correct[rt_ms < unique(procedural_cutoff_ms)], na.rm = TRUE), 3),
+    n_below_empirical = sum(rt_ms < unique(empirical_threshold_ms)),
     pct_below_empirical = round(mean(rt_ms < unique(empirical_threshold_ms)) * 100, 2),
     acc_below_empirical = round(mean(correct[rt_ms < unique(empirical_threshold_ms)], na.rm = TRUE), 3),
     .groups = "drop"
   )
+
+print(prevalence, n = Inf, width = Inf)
 ```
 
 # Accuracy below the empirical boundary
@@ -370,27 +388,53 @@ df_all_studies %>%
   )
 ```
 
-# Accuracy below 300 ms
+# Participant spread in the fast chance-level region
 
-```{r fixed_cutoff1}
+```{r participant_spread}
+group_totals = df_all_studies %>%
+  dplyr::distinct(study_label, condition, participant) %>%
+  dplyr::count(study_label, condition, name = "n_participants_total")
+
+spread = df_all_studies %>%
+  dplyr::left_join(empirical_thresholds, by = c("study_label", "condition")) %>%
+  dplyr::filter(rt_ms < empirical_threshold_ms) %>%
+  dplyr::count(study_label, condition, participant, name = "n_fast") %>%
+  dplyr::group_by(study_label, condition) %>%
+  dplyr::summarise(
+    n_with_fast = dplyr::n(), # participants with >= 1 fast trial
+    n_with_10plus = sum(n_fast >= 10), # participants with >= 10 fast trials
+    median_per_pp = median(n_fast),
+    q25_per_pp = quantile(n_fast, 0.25),
+    q75_per_pp = quantile(n_fast, 0.75),
+    max_per_pp = max(n_fast),
+    .groups = "drop"
+  ) %>%
+  dplyr::left_join(group_totals, by = c("study_label", "condition")) %>%
+  dplyr::mutate(pct_with_fast = round(100 * n_with_fast / n_participants_total, 1)) %>%
+  dplyr::relocate(n_participants_total, .after = n_with_fast)
+
+print(spread, n = Inf, width = Inf)
+```
+
+# Accuracy below the procedural cutoff
+
+```{r fixed_cutoff}
 df_all_studies %>%
   dplyr::group_by(study_label, condition) %>%
   dplyr::summarise(
-    n_trials_below_300 = sum(rt_ms < my_cutoff_ms),
-    n_pp_any_below_300 = dplyr::n_distinct(participant[rt_ms < my_cutoff_ms]),
+    n_trials_below_procedural = sum(rt_ms < procedural_cutoff_ms),
+    n_pp_any_below_procedural = dplyr::n_distinct(participant[rt_ms < procedural_cutoff_ms]),
     .groups = "drop"
   )
 
 df_all_studies %>%
-  dplyr::filter(rt_ms < my_cutoff_ms) %>%
-  dplyr::count(study_label, condition, participant, name = "n_below_300") %>%
+  dplyr::filter(rt_ms < procedural_cutoff_ms) %>%
+  dplyr::count(study_label, condition, participant, name = "n_below_procedural") %>%
   dplyr::group_by(study_label, condition) %>%
-  dplyr::summarise(n_subj = sum(n_below_300 >= 10), .groups = "drop")
-```
+  dplyr::summarise(n_subj = sum(n_below_procedural >= 10), .groups = "drop")
 
-```{r fixed_cutoff2}
 df_all_studies %>%
-  dplyr::filter(rt_ms < my_cutoff_ms) %>%
+  dplyr::filter(rt_ms < procedural_cutoff_ms) %>%
   dplyr::group_by(study_label, participant, condition) %>%
   dplyr::summarise(acc = mean(correct, na.rm = TRUE),
                    n = dplyr::n(), .groups = "drop") %>%
@@ -439,4 +483,65 @@ summarise_dip_by_condition(dip_results) %>%
 
 summarise_dip_overall(dip_results) %>%
   dplyr::mutate(pct_significant = round(pct_significant, 2))
+```
+
+```{r heavy_contributors_dip}
+fast_counts = df_all_studies %>%
+  dplyr::left_join(empirical_thresholds, by = c("study_label", "condition")) %>%
+  dplyr::group_by(study_label, condition, participant) %>%
+  dplyr::summarise(
+    n_trials = dplyr::n(),
+    n_fast = sum(rt_ms < empirical_threshold_ms),
+    median_rt_fast = median(rt_ms[rt_ms < empirical_threshold_ms]),
+    .groups = "drop"
+  ) %>%
+  dplyr::mutate(pct_fast = round(100 * n_fast / n_trials, 1))
+
+heavy_ids = fast_counts %>%
+  dplyr::filter(n_fast >= 10) %>%
+  dplyr::select(study_label, condition, participant, n_fast)
+
+dip_results %>%
+  dplyr::filter(dip_p < .05) %>%
+  dplyr::left_join(fast_counts, by = c("study_label", "condition", "participant")) %>%
+  dplyr::select(study_label, condition, participant, dip_p, n_fast, pct_fast, median_rt_fast) %>%
+  dplyr::arrange(dplyr::desc(n_fast)) %>%
+  dplyr::mutate(median_rt_fast = sprintf("%.2f", median_rt_fast))
+```
+
+# Sensitivity check: 25-ms bins
+
+```{r sensitivity_25ms}
+caf_results_25 = calc_caf(df_all_studies, binwidth = my_caf_binwidth_sensitivity, min_n = 20)
+
+calc_caf_threshold(caf_results_25) %>%
+  dplyr::mutate(
+    mean_rt = round(mean_rt, 0),
+    acc = round(acc, 2),
+    ci_low  = round(ci_low, 2),
+    ci_high = round(ci_high, 2)
+  )
+
+empirical_thresholds_25 = calc_caf_threshold(caf_results_25) %>%
+  dplyr::transmute(study_label, condition, empirical_threshold_ms = mean_rt)
+
+sensitivity_25ms = df_all_studies %>%
+  dplyr::left_join(empirical_thresholds_25, by = c("study_label", "condition")) %>%
+  dplyr::group_by(study_label, condition) %>%
+  dplyr::summarise(
+    n_total = dplyr::n(),
+    n_below_empirical = sum(rt_ms < unique(empirical_threshold_ms)),
+    pct_below_empirical = round(mean(rt_ms < unique(empirical_threshold_ms)) * 100, 2),
+    n_correct_below = sum(correct[rt_ms < unique(empirical_threshold_ms)]),
+    acc_below_empirical = round(mean(correct[rt_ms < unique(empirical_threshold_ms)], na.rm = TRUE), 3),
+    .groups = "drop"
+  ) %>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(
+    ci_low = round(binom.test(n_correct_below, n_below_empirical)$conf.int[1], 3),
+    ci_high = round(binom.test(n_correct_below, n_below_empirical)$conf.int[2], 3)
+  ) %>%
+  dplyr::ungroup()
+
+print(sensitivity_25ms, n = Inf, width = Inf)
 ```

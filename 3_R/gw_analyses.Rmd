@@ -1,6 +1,6 @@
 ---
 title: "Guess What!"
-date: "June 2026"
+date: "November 2026"
 output: 
   html_document:
     code_folding: hide
@@ -242,10 +242,10 @@ summary_with_symbol = summary_with_symbol %>%
     across(
       c(guess_mean, control_mean, guess_sd, control_sd),
       ~ dplyr::if_else(
-          stat == "accuracy",
-          sub("^0\\.", ".", format(round(.x, 2), nsmall = 2)),
-          format(round(.x, 2), nsmall = 2)
-        )
+        stat == "accuracy",
+        sub("^0\\.", ".", format(round(.x, 2), nsmall = 2)),
+        format(round(.x, 2), nsmall = 2)
+      )
     )
   )
 
@@ -294,9 +294,7 @@ anova_table_for = function(data, dv, add_symbol = TRUE, ci = 0.95) {
   }
   eta_model = stats::aov(eta_form, data = dat)
 
-  eta_tab = effectsize::eta_squared(
-    eta_model, generalized = T, partial=F, ci = ci, alternative="two.sided"
-  ) %>%
+  eta_tab = effectsize::eta_squared(eta_model, generalized = T, partial=F, ci = ci, alternative="two.sided") %>%
     as.data.frame() %>%
     dplyr::select(effect = Parameter, eta_squared = Eta2_generalized, LL = CI_low, UL = CI_high)
 
@@ -429,7 +427,7 @@ ft_behav = ft_behav %>%
 ft_behav
 ```
 
-## t-Tests
+## t Tests
 
 ```{r ttests_behav, include=T, warning=F, message=F}
 reshape_behav = function(data, add_symbol = FALSE) {
@@ -642,9 +640,7 @@ for (model in c("lfm", "dm")) {
 ```
 
 ```{r params_table, include=T, warning=FALSE, message=FALSE, results='asis'}
-htmltools::tagList(
-  lapply(ft_bf_list, flextable::htmltools_value)
-)
+htmltools::tagList(lapply(ft_bf_list, flextable::htmltools_value))
 ```
 
 ## Miscellaneous
@@ -868,10 +864,17 @@ build_model_table = function(d1, d2, model_name, predictors, p_cutoff, caption_t
     )
 
   coef_table_all$CI_B = paste0("[", coef_table_all$conf.low, ", ", coef_table_all$conf.high, "]")
-  my_dfs = unique(coef_table_all$df)
+  df_by_cell = coef_table_all %>% dplyr::distinct(study_nr, group, df)
+  np = length(predictors)
+  df_text = function(s) {
+    d = df_by_cell[df_by_cell$study_nr == s, ]
+    if (length(unique(d$df)) == 1) sprintf("df = (%d, %d)", np, d$df[1])
+    else sprintf("df = (%d, %d) for the guessing group and (%d, %d) for the control group",
+                 np, d$df[d$group == "guess"], np, d$df[d$group == "control"])
+  }
   coef_table_all = coef_table_all %>%
     dplyr::select(study_nr, group, outcome, term, estimate, CI_B, std.error, beta, statistic, p.value)
-
+  
   coef_educated = coef_table_all[coef_table_all$outcome == "educated", ]
   coef_random = coef_table_all[coef_table_all$outcome == "random", ]
   names(coef_random) = paste0(names(coef_random), "2")
@@ -898,14 +901,27 @@ build_model_table = function(d1, d2, model_name, predictors, p_cutoff, caption_t
     coef_table_all_f[(3 * np + 1):(4 * np), ]
   )
 
+  #print(coef_table_all_f)
   ft_bf = flextable::flextable(coef_table_all_f)
 
+  #original set
   ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "alpha",
                              value = flextable::as_paragraph("\u03B1"))
   ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "a",
                              value = flextable::as_paragraph(flextable::as_i("a")))
   ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "t0",
                              value = flextable::as_paragraph(flextable::as_i("t"), flextable::as_sub("0")))
+  #extended set
+  ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "st0",
+                             value = flextable::as_paragraph(flextable::as_i("s"), flextable::as_sub("t0")))
+  ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "v0",
+                             value = flextable::as_paragraph(flextable::as_i("v"), flextable::as_sub("0")))
+  #full set
+  ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "v1",
+                             value = flextable::as_paragraph(flextable::as_i("v"), flextable::as_sub("1")))
+  ft_bf = flextable::compose(ft_bf, j = "term", i = coef_table_all_f$term == "zr",
+                             value = flextable::as_paragraph(flextable::as_i("z"), flextable::as_sub("r")))
+  
 
   new_col_names = c("Source", rep(c("B", "CI", "SE B", "beta", "t", "p"), 2))
   ft_bf = flextable::set_header_labels(ft_bf, values = setNames(new_col_names, names(coef_table_all_f)))
@@ -928,26 +944,61 @@ build_model_table = function(d1, d2, model_name, predictors, p_cutoff, caption_t
   ft_bf = flextable::align(ft_bf, part = "header", i = 1:3, j = 2:13, align = "center")
 
   ft_bf = ft_bf %>% add_footer_lines(sprintf(
-    "Note. Each regression analysis was conducted with df = (%d, %s) in Study 1 and df = (%d, %s) in Study 2.",
-    np, my_dfs[1], np, my_dfs[2]))
+    "Note. Each regression analysis was conducted with %s in Study 1 and %s in Study 2.",
+    df_text(1), df_text(2)))
   autofit(ft_bf) %>% flextable::set_caption(caption_text)
 }
+```
 
-# Four tables
-build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", "a", "t0"), p_cutoff = 0.001,
+### Original Parameter Set
+
+```{r original_regress, include=T}
+param_set = c("a", "t0")
+
+build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", param_set), p_cutoff = 0.001,
                   caption_text = "Lévy-flight model: Excluding outliers")
-build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", "a", "t0"), p_cutoff = 0,
+build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", param_set), p_cutoff = 0,
                   caption_text = "Lévy-flight model: Including outliers")
-build_model_table(bf_demo1, bf_demo2, "dm", c("a", "t0"), p_cutoff = 0.001,
+build_model_table(bf_demo1, bf_demo2, "dm", param_set, p_cutoff = 0.001,
                   caption_text = "Diffusion model: Excluding outliers")
-build_model_table(bf_demo1, bf_demo2, "dm", c("a", "t0"), p_cutoff = 0,
+build_model_table(bf_demo1, bf_demo2, "dm", param_set, p_cutoff = 0,
+                  caption_text = "Diffusion model: Including outliers")
+```
+
+### Extended Parameter Set
+
+```{r extended_regress, include=T}
+param_set = c("a", "t0", "st0", "v0")
+
+build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", param_set), p_cutoff = 0.001,
+                  caption_text = "Lévy-flight model: Excluding outliers")
+build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", param_set), p_cutoff = 0,
+                  caption_text = "Lévy-flight model: Including outliers")
+build_model_table(bf_demo1, bf_demo2, "dm", param_set, p_cutoff = 0.001,
+                  caption_text = "Diffusion model: Excluding outliers")
+build_model_table(bf_demo1, bf_demo2, "dm", param_set, p_cutoff = 0,
+                  caption_text = "Diffusion model: Including outliers")
+```
+
+### Full Parameter Set
+
+```{r full_regress, include=T}
+param_set = c("a", "zr", "v0", "v1", "t0", "st0")
+
+build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", param_set), p_cutoff = 0.001,
+                  caption_text = "Lévy-flight model: Excluding outliers")
+build_model_table(bf_demo1, bf_demo2, "lfm", c("alpha", param_set), p_cutoff = 0,
+                  caption_text = "Lévy-flight model: Including outliers")
+build_model_table(bf_demo1, bf_demo2, "dm", param_set, p_cutoff = 0.001,
+                  caption_text = "Diffusion model: Excluding outliers")
+build_model_table(bf_demo1, bf_demo2, "dm", param_set, p_cutoff = 0,
                   caption_text = "Diffusion model: Including outliers")
 ```
 
 ## Bivariate Correlations
 
 ```{r bivariate_rs, include=T}
-remove_outliers = function(d, vars, p_cutoff = 0.001) {
+remove_bi_outliers = function(d, vars, p_cutoff = 0.001) {
   d = d[complete.cases(d[vars]), ]
   if (nrow(d) < length(vars)) return(d)
   x = as.matrix(d[vars])
@@ -957,10 +1008,15 @@ remove_outliers = function(d, vars, p_cutoff = 0.001) {
 }
 
 sig_stars = function(p) {
-  if (is.na(p) || p >= 0.05) ""
-  else if (p < 0.001) "***"
-  else if (p < 0.01)  "**"
-  else                "*"
+  if (is.na(p) || p >= 0.05) {
+    ""
+  } else if (p < 0.001) {
+    "***"
+  } else if (p < 0.01) {
+    "**"
+  } else {
+    "*"
+  }
 }
 
 get_corr_matrix = function(data, group_name, outcomes = c("educated", "random"), predictors = c("alpha", "a", "t0"),
@@ -976,7 +1032,7 @@ get_corr_matrix = function(data, group_name, outcomes = c("educated", "random"),
     for (j in (i + 1):n) {
       v1 = vars_all[i]
       v2 = vars_all[j]
-      d_clean = remove_outliers(d, vars = c(v1, v2), p_cutoff = p_cutoff)
+      d_clean = remove_bi_outliers(d, vars = c(v1, v2), p_cutoff = p_cutoff)
       n_used = nrow(d_clean)
       if (n_used > 3) {
         ct = suppressWarnings(cor.test(d_clean[[v1]], d_clean[[v2]], method = method))
@@ -1103,46 +1159,74 @@ check_multicollinearity = function(data, study_nr, group = "guess",
   dplyr::tibble(study_nr = study_nr, group = group, !!!vif_cols)
 }
 
-build_vif_for_model = function(model_name, predictors) {
-  d1 = bf_demo1[bf_demo1$model == model_name, ]
-  d2 = bf_demo2[bf_demo2$model == model_name, ]
-
-  vif_table_study1 = expand.grid(group = c("guess", "control"),
-                                 outcome = c("random"),
-                                 stringsAsFactors = FALSE) %>%
-    pmap_dfr(function(group, outcome) {
-      check_multicollinearity(data = d1, study_nr = 1,
-                              group = group, outcome = outcome, vars = predictors)
-    })
-
-  vif_table_study2 = expand.grid(group = c("guess", "control"),
-                                 outcome = c("random"),
-                                 stringsAsFactors = FALSE) %>%
-    pmap_dfr(function(group, outcome) {
-      check_multicollinearity(data = d2, study_nr = 2,
-                              group = group, outcome = outcome, vars = predictors)
-    })
-
-  vif_table = bind_rows(vif_table_study1, vif_table_study2)
-
-  vif_range1 = vif_table_study1 %>% dplyr::select(starts_with("vif")) %>%
-    dplyr::summarise(min_vif = min(unlist(.), na.rm = TRUE),
-                     max_vif = max(unlist(.), na.rm = TRUE))
-  vif_range2 = vif_table_study2 %>% dplyr::select(starts_with("vif")) %>%
-    dplyr::summarise(min_vif = min(unlist(.), na.rm = TRUE),
-                     max_vif = max(unlist(.), na.rm = TRUE))
-
-  cat(sprintf("=== %s ===", ifelse(model_name=="lfm", "Lévy-flight model", "Diffusion model")),
-      sprintf("VIF range in Study 1: %.2f\u2013%.2f", vif_range1$min_vif, vif_range1$max_vif),
-      sprintf("VIF range in Study 2: %.2f\u2013%.2f", vif_range2$min_vif, vif_range2$max_vif),
-      sep = "\n")
-  cat("\n\n")
-
-  invisible(list(table = vif_table, range1 = vif_range1, range2 = vif_range2))
+vif_from_results = function(results, study_nr) {
+  do.call(rbind, lapply(results, function(res) {
+    if (res$outcome != "random") return(NULL)
+    v = round(car::vif(res$model2), 2)
+    tibble(study_nr = study_nr, group = res$group, n = nobs(res$model2),
+           !!!setNames(as.list(v[res$predictors]), paste0("vif_", res$predictors)))
+  }))
 }
 
-vif_levy = build_vif_for_model("lfm", c("alpha", "a", "t0"))
-vif_dm = build_vif_for_model("dm", c("a", "t0"))
+build_vif_for_model = function(model_name, predictors, p_cutoff = 0.001) {
+  d1 = bf_demo1[bf_demo1$model == model_name, ]
+  d2 = bf_demo2[bf_demo2$model == model_name, ]
+  r1 = run_all(d1, predictors = predictors, p_cutoff = p_cutoff)
+  r2 = run_all(d2, predictors = predictors, p_cutoff = p_cutoff)
+
+  vif_table = bind_rows(vif_from_results(r1, 1), vif_from_results(r2, 2))
+
+  rng = function(tbl) range(unlist(dplyr::select(tbl, starts_with("vif_"))), na.rm = TRUE)
+  cat(sprintf("%s", ifelse(model_name == "lfm", "Lévy-flight model", "Diffusion model")),
+      sprintf("VIF range in Study 1: %.2f\u2013%.2f", rng(vif_table[vif_table$study_nr == 1, ])[1],
+                                                       rng(vif_table[vif_table$study_nr == 1, ])[2]),
+      sprintf("VIF range in Study 2: %.2f\u2013%.2f", rng(vif_table[vif_table$study_nr == 2, ])[1],
+                                                       rng(vif_table[vif_table$study_nr == 2, ])[2]),
+      sep = "\n")
+
+  if (p_cutoff == 0.001) {
+      vif_detailed = vif_table %>%
+    tidyr::pivot_longer(
+      cols = starts_with("vif_"),
+      names_to = "predictor",
+      names_prefix = "vif_",
+      values_to = "VIF",
+      values_drop_na = TRUE
+    ) %>%
+    dplyr::arrange(study_nr, group, predictor)
+  
+  cat("\nDetailed VIFs:\n")
+  print(vif_detailed, n = Inf)
+  }
+
+  invisible(vif_table)
+}
+
+cat("---- EXCLUDING OUTLIERS ----\n")
+cat("-- Original parameter set --\n")
+vif_levy = build_vif_for_model("lfm", c("alpha", "a", "t0")) 
+vif_dm   = build_vif_for_model("dm",  c("a", "t0"))
+
+cat("-- Extended parameter set --\n")
+vif_levy = build_vif_for_model("lfm", c("alpha", "a", "t0", "st0", "v0"))
+vif_dm   = build_vif_for_model("dm",  c("a", "t0", "st0", "v0"))
+
+cat("-- Full parameter set --\n")
+vif_levy = build_vif_for_model("lfm", c("alpha", "a", "t0", "st0", "v0", "v1", "zr"))
+vif_dm   = build_vif_for_model("dm",  c("a", "t0", "st0", "v0", "v1", "zr"))
+
+cat("---- INCLUDING OUTLIERS ----\n")
+cat("-- Original parameter set --\n")
+vif_levy = build_vif_for_model("lfm", c("alpha", "a", "t0"), p_cutoff = 0) 
+vif_dm   = build_vif_for_model("dm",  c("a", "t0"), p_cutoff = 0)
+
+cat("-- Extended parameter set --\n")
+vif_levy = build_vif_for_model("lfm", c("alpha", "a", "t0", "st0", "v0"), p_cutoff = 0)
+vif_dm   = build_vif_for_model("dm",  c("a", "t0", "st0", "v0"), p_cutoff = 0)
+
+cat("-- Full parameter set --\n")
+vif_levy = build_vif_for_model("lfm", c("alpha", "a", "t0", "st0", "v0", "v1", "zr"), p_cutoff = 0)
+vif_dm   = build_vif_for_model("dm",  c("a", "t0", "st0", "v0", "v1", "zr"), p_cutoff = 0)
 ```
 
 ## Within-Posterior Correlations
@@ -1193,12 +1277,8 @@ full_table = bf_corrs %>%
   dplyr::group_modify(~ summarise_corr(.x$r)) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(
-    correlation = recode(
-      correlation,
-      r_alpha_a = "alpha_a",
-      r_alpha_t0 = "alpha_t0",
-      r_a_t0 = "a_t0"
-    ),
+    correlation = recode(correlation, 
+                         r_alpha_a = "alpha_a", r_alpha_t0 = "alpha_t0", r_a_t0 = "a_t0"), 
     Study = study_nr
   )
 
