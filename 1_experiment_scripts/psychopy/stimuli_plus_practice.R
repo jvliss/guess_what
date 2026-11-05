@@ -7,7 +7,9 @@ library(writexl)
 library(jsonlite)
 
 #paths and working directory
-setwd("C:/Users/Katharina Mminele/iCloudDrive/Manuskript")
+my_path = rstudioapi::getActiveDocumentContext()$path
+my_path = paste0(sub("(.*psychopy).*", "\\1", my_path), "/")
+setwd(my_path)
 load("stimuli.rda")
 stimuli <- df
 
@@ -433,6 +435,3 @@ write_json(out, 'stimuli_new.json', pretty=T)
 end.time <- Sys.time()
 time.taken <- round(end.time - start.time,2)
 print(time.taken)
-
-
-  

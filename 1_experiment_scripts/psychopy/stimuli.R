@@ -4,7 +4,9 @@ library(writexl)
 library(jsonlite)
 
 #paths and working directory
-setwd("C:/Users/Katharina Mminele/iCloudDrive/CAU/Masterarbeit/Study2_numeric/Study2")
+my_path = rstudioapi::getActiveDocumentContext()$path
+my_path = paste0(sub("(.*psychopy).*", "\\1", my_path), "/")
+setwd(my_path)
 
 #measure time - start
 start.time <- Sys.time()
